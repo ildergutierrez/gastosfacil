@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" >
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <queries>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+    </queries>
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name_display"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.GastoFacil" >
+        <activity
+            android:name=".inicioSesion"
+            android:exported="true"
+            android:label="@string/app_name_display"
+            android:theme="@style/Theme.GastoFacil"
+            android:windowSoftInputMode="adjustResize" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".RegistroActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name=".DashboardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MovimientosActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".HistoriaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".GraficosActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ConfiguracionActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".TerminosActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PrivacidadActivity"
+            android:exported="false" />
+    </application>
+
+</manifest>

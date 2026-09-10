@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "19311821017",
+    "firebase_url": "https://gastofacil-4985f-default-rtdb.firebaseio.com",
+    "project_id": "gastofacil-4985f",
+    "storage_bucket": "gastofacil-4985f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:19311821017:android:1b7fd8dc81c1ea692dfec8",
+        "android_client_info": {
+          "package_name": "com.example.gastofacil"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7VH9LSEAJ2XypDCE3pZ87ppy-cw_mcEA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

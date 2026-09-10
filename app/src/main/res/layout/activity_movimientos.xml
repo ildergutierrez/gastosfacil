@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/fondo_2"
+    tools:context=".MovimientosActivity">
+
+    <!-- Header -->
+    <ImageButton
+        android:id="@+id/btnLogoM"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitCenter"
+        android:src="@drawable/icono"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/logo" />
+
+    <TextView
+        android:id="@+id/tvTitleM"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/m_title"
+        android:textColor="#263238"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/btnLogoM"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btnLogoM" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavM"
+        app:layout_constraintTop_toBottomOf="@id/btnLogoM">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="30dp"
+            android:paddingBottom="30dp">
+
+            <!-- Toggle Container -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:background="@drawable/toggle_capsule_bg"
+                android:orientation="horizontal"
+                android:padding="4dp"
+                android:minWidth="200dp">
+
+                <TextView
+                    android:id="@+id/tvToggleIngreso"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/toggle_item_active"
+                    android:gravity="center"
+                    android:text="@string/m_ingreso"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:clickable="true"
+                    android:focusable="true"/>
+
+                <TextView
+                    android:id="@+id/tvToggleEgreso"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:text="@string/m_egreso"
+                    android:textColor="#78909C"
+                    android:textSize="14sp"
+                    android:clickable="true"
+                    android:focusable="true"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvAmountLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/ni_amount_label"
+                android:textColor="#90A4AE"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textAllCaps="true" />
+
+            <TextView
+                android:id="@+id/tvAvailableBalanceM"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/m_available_balance"
+                android:textColor="#78909C"
+                android:textSize="12sp"
+                android:textStyle="italic" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/m_money"
+                    android:textColor="#263238"
+                    android:textSize="64sp"
+                    android:fontFamily="sans-serif-light" />
+
+                <EditText
+                    android:id="@+id/etAmount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:hint="0.00"
+                    android:inputType="numberDecimal"
+                    android:textColor="#263238"
+                    android:textSize="64sp"
+                    android:fontFamily="sans-serif-light"
+                    android:minWidth="100dp"
+                    android:autofillHints="none" />
+            </LinearLayout>
+
+            <!-- Category Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:text="@string/ng_category_label"
+                android:textColor="#78909C"
+                android:textSize="14sp" />
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingVertical="5dp">
+
+                    <TextView
+                        android:id="@+id/tvCatComida"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/category_chip_selected_bg"
+                        android:gravity="center"
+                        android:paddingHorizontal="22dp"
+                        android:paddingVertical="10dp"
+                        android:text="@string/ng_cat_food"
+                        android:textColor="@color/nav_active"
+                        android:clickable="true"
+                        android:focusable="true" />
+
+                    <TextView
+                        android:id="@+id/tvCatTransporte"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:background="@drawable/category_chip_bg"
+                        android:gravity="center"
+                        android:paddingHorizontal="22dp"
+                        android:paddingVertical="10dp"
+                        android:text="@string/ng_cat_transport"
+                        android:textColor="#263238"
+                        android:clickable="true"
+                        android:focusable="true" />
+
+                    <TextView
+                        android:id="@+id/tvCatEstudio"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:background="@drawable/category_chip_bg"
+                        android:gravity="center"
+                        android:paddingHorizontal="22dp"
+                        android:paddingVertical="10dp"
+                        android:text="@string/ng_cat_study"
+                        android:textColor="#263238"
+                        android:clickable="true"
+                        android:focusable="true" />
+
+                    <TextView
+                        android:id="@+id/tvCatOtro"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:background="@drawable/category_chip_bg"
+                        android:gravity="center"
+                        android:paddingHorizontal="22dp"
+                        android:paddingVertical="10dp"
+                        android:text="@string/m_cat_otro"
+                        android:textColor="#263238"
+                        android:clickable="true"
+                        android:focusable="true" />
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <!-- Date Input -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/ng_date_label"
+                android:textColor="#78909C"
+                android:textSize="14sp" />
+
+            <RelativeLayout
+                android:id="@+id/rlDatePicker"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/rounded_input"
+                android:paddingHorizontal="16dp"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:id="@+id/tvDateDisplay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/ng_date_default"
+                    android:textColor="#263238"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_calendar"
+                    app:tint="#90A4AE"
+                    android:contentDescription="@string/ng_date_label" />
+            </RelativeLayout>
+
+            <!-- Note Input -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/ng_note_label"
+                android:textColor="#78909C"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/etNote"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/rounded_input"
+                android:hint="@string/ng_note_hint"
+                android:paddingHorizontal="16dp"
+                android:textColor="@color/black"
+                android:textColorHint="#757575"
+                android:textSize="16sp"
+                android:inputType="text"
+                android:autofillHints="none" />
+
+            <!-- Photo Container -->
+            <RelativeLayout
+                android:id="@+id/rlPhotoPicker"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/rounded_input"
+                android:paddingHorizontal="16dp"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:id="@+id/ivCameraIcon"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_camera"
+                    app:tint="#000000" />
+
+                <TextView
+                    android:id="@+id/tvPhotoHint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@id/ivCameraIcon"
+                    android:layout_marginStart="15dp"
+                    android:text="@string/m_photo_hint"
+                    android:textColor="#B0BEC5"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:id="@+id/ivCapturedPhoto"
+                    android:layout_width="65dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginVertical="8dp"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone"
+                    android:contentDescription="@string/m_photo_hint"/>
+            </RelativeLayout>
+
+            <!-- Confirm Button -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_marginTop="30dp">
+
+                <Button
+                    android:id="@+id/btnConfirm"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:backgroundTint="#00BFA5"
+                    android:background="@drawable/confirm_button_bg"
+                    android:text="@string/ni_confirm_button"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="16dp"/>
+
+                <ProgressBar
+                    android:id="@+id/pbConfirm"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:visibility="gone"
+                    android:indeterminateTint="@color/white" />
+            </FrameLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Bottom Navigation -->
+    <LinearLayout
+        android:id="@+id/bottomNavM"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:background="@color/white"
+        android:elevation="12dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:id="@+id/navHome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="?attr/selectableItemBackground">
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_home"
+                app:tint="@color/nav_inactive" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/d_nav_home"
+                android:textColor="@color/nav_inactive"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/navExpenses"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="?attr/selectableItemBackground">
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_minus_circle"
+                app:tint="@color/nav_active" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/d_nav_expenses"
+                android:textColor="@color/nav_active"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/navHistory"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="?attr/selectableItemBackground">
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_history"
+                app:tint="@color/nav_inactive" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/d_nav_history"
+                android:textColor="@color/nav_inactive"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/navCharts"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="?attr/selectableItemBackground">
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_pie_chart"
+                app:tint="@color/nav_inactive" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/d_nav_charts"
+                android:textColor="@color/nav_inactive"
+                android:textSize="11sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

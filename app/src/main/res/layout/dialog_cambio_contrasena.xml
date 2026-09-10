@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/rounded_input">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/c_change_password"
+        android:textColor="@color/purple_500"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:layout_marginBottom="24dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/c_current_pass"
+        android:textColor="@color/nav_inactive"
+        android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/etCurrentPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/rounded_input"
+        android:hint="@string/password_hint"
+        android:inputType="textPassword"
+        android:padding="12dp"
+        android:textColor="@color/black"
+        android:textColorHint="#757575"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/c_new_pass"
+        android:textColor="@color/nav_inactive"
+        android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/etNewPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/rounded_input"
+        android:hint="@string/password_hint"
+        android:inputType="textPassword"
+        android:padding="12dp"
+        android:textColor="@color/black"
+        android:textColorHint="#757575"
+        android:layout_marginBottom="24dp" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnSavePassword"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@drawable/confirm_button_bg"
+            android:text="@string/c_save"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <ProgressBar
+            android:id="@+id/pbDialogPass"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:indeterminateTint="@color/white" />
+    </FrameLayout>
+
+</LinearLayout>

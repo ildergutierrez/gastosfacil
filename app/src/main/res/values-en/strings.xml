@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">EasyExpenses</string>
+    <string name="title_activity_inicio_sesion">Login</string>
+</resources>

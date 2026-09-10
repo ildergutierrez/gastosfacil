@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/rounded_input">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/c_reauth_pass_title"
+        android:textColor="@color/purple_500"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/c_reauth_pass_desc"
+        android:textColor="@color/nav_inactive"
+        android:textSize="14sp"
+        android:layout_marginBottom="16dp"
+        android:gravity="center" />
+
+    <EditText
+        android:id="@+id/etReauthPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_input"
+        android:hint="@string/password_hint"
+        android:inputType="textPassword"
+        android:autofillHints="password"
+        android:padding="12dp"
+        android:textColor="@color/black"
+        android:textColorHint="#757575"
+        android:layout_marginBottom="24dp" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnConfirmEmailChange"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@drawable/confirm_button_bg"
+            android:text="@string/c_save"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <ProgressBar
+            android:id="@+id/pbDialogReauth"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:indeterminateTint="@color/white" />
+    </FrameLayout>
+
+</LinearLayout>

@@ -1,4 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- general -->
     <string name="app_name">EasyExpenses</string>
     <string name="title_activity_inicio_sesion">Login</string>
+    <string name="logo">logo</string>
+
+    <string name="login_title">Login</string>
+    <string name="app_name_display">Easy Expenses</string>
+    <string name="email_user_label">Email / User</string>
+    <string name="email_hint">Ex: user@gmail.com</string>
+    <string name="password_label">Password</string>
+    <string name="password_hint">********</string>
+    <string name="login_button">Login</string>
+    <string name="no_account_text">Don\'t have an account? </string>
+    <string name="register_text">Sign Up</string>
+
+    <!-- Registro Screen -->
+    <string name="register_title">Create Account</string>
+    <string name="r_nombres">Full Name</string>
+    <string name="r_name_hint">John Doe</string>
+    <string name="r_correo">Email Address</string>
+    <string name="r_email_hint">john@example.com</string>
+    <string name="r_telefono">Phone</string>
+    <string name="r_phone_hint">+1 234 567 890</string>
+    <string name="r_contrasena">Password</string>
+    <string name="r_password_hint">********</string>
+    <string name="r_confirmar_contrasena">Confirm Password</string>
+    <string name="r_boton_registro">Register</string>
+    <string name="r_ya_tienes_cuenta">Already have an account? </string>
+    <string name="r_inicia_sesion">Login</string>
+    <string name="r_volver">Back</string>
+
+    <string name="desc_notifications">Notifications</string>
+    <string name="desc_trend_up">Trend up</string>
+    <string name="desc_trend_down">Trend down</string>
+    <string name="desc_plus">Plus icon</string>
+    <string name="desc_minus">Minus icon</string>
+    <string name="desc_trans_icon">Transaction icon</string>
+
+    <!-- Dashboard Screen -->
+    <string name="d_available_money">Available Balance</string>
+    <string name="d_balance_value">$0.00</string>
+    <string name="d_incomes_label">Incomes: </string>
+    <string name="d_incomes_value">+$0</string>
+    <string name="d_expenses_label">Expenses: </string>
+    <string name="d_expenses_value">-$0</string>
+    <string name="d_register_income">Register Income</string>
+    <string name="d_register_expense">Register Expense</string>
+    <string name="d_register_movement">Register Movement</string>
+    <string name="d_summary_title">Expense Summary</string>
+    <string name="d_summary_desc">Your main category is Food with 0%% of the total.</string>
+    <string name="d_recent_transactions">Recent Transactions</string>
+    <string name="d_view_all">View All</string>
+
+    <string name="d_nav_home">Home</string>
+    <string name="d_nav_expenses">Movements</string>
+    <string name="d_nav_history">History</string>
+    <string name="d_nav_charts">Charts</string>
+
+    <string name="d_trans_netflix">Netflix Subscription</string>
+    <string name="d_trans_netflix_desc">Entertainment · Today, 10:15 AM</string>
+    <string name="d_trans_netflix_val">-$14.99</string>
+
+    <string name="d_trans_market">Grocery Shopping</string>
+    <string name="d_trans_market_desc">Food · Today, 08:30 AM</string>
+    <string name="d_trans_market_val">-$64.50</string>
+
+    <string name="d_trans_salary">Monthly Salary</string>
+    <string name="d_trans_salary_desc">Work · Yesterday, 06:00 PM</string>
+    <string name="d_trans_salary_val">+$2,800.00</string>
+
+    <!-- Nuevo Gasto Screen -->
+    <string name="ng_title">New Expense</string>
+    <string name="ng_amount_label">EXPENSE AMOUNT</string>
+    <string name="ng_amount_default">$ 0.00</string>
+    <string name="ng_category_label">Category</string>
+    <string name="ng_cat_food">Food</string>
+    <string name="ng_cat_transport">Transport</string>
+    <string name="ng_cat_study">Study</string>
+    <string name="ng_cat_leisure">Leisure</string>
+    <string name="ng_date_label">Date</string>
+    <string name="ng_date_default">Today, Dec 10</string>
+    <string name="ng_note_label">Note / Description</string>
+    <string name="ng_note_hint">Write a detail...</string>
+    <string name="ng_confirm_button">Confirm Expense</string>
+
+    <!-- Historial Screen -->
+    <string name="h_title">History</string>
+    <string name="h_load_more">See more</string>
+    <string name="h_today">TODAY</string>
+    <string name="h_yesterday">YESTERDAY</string>
+    <string name="h_trans_gas">Fuel Refill</string>
+    <string name="h_trans_gas_desc">Transportation · Dec 08, 02:15 PM</string>
+    <string name="h_trans_gas_val">-$35.00</string>
+    <string name="desc_filter">Filter transactions</string>
+
+    <!-- Graficos Screen -->
+    <string name="g_title">Analysis</string>
+    <string name="g_month_default">December 2024</string>
+    <string name="g_total_spent_label">Total Spent: </string>
+    <string name="g_total_spent_val">$0.00</string>
+    <string name="g_breakdown_title">Breakdown by Category</string>
+
+    <string name="g_val_food">$180.00</string>
+    <string name="g_pct_food">45%</string>
+    <string name="g_val_transp">$80.00</string>
+    <string name="g_pct_transp">20%</string>
+    <string name="g_val_study">$60.00</string>
+    <string name="g_pct_study">15%</string>
+    <string name="g_val_leisure">$80.00</string>
+    <string name="g_pct_leisure">20%</string>
+
+    <string name="desc_prev_month">Previous month</string>
+    <string name="desc_next_month">Next month</string>
+
+    <!-- Nuevo Ingreso Screen -->
+    <string name="ni_title">New Income</string>
+    <string name="ni_amount_label">INCOME AMOUNT</string>
+    <string name="ni_cat_salary">Salary</string>
+    <string name="ni_cat_freelance">Freelance</string>
+    <string name="ni_cat_investment">Investment</string>
+    <string name="ni_cat_other">Other</string>
+    <string name="ni_confirm_button">Confirm Income</string>
+
+    <!-- Movimientos Screen -->
+    <string name="m_title">Movements</string>
+    <string name="m_ingreso">Income</string>
+    <string name="m_egreso">Expense</string>
+    <string name="m_photo_hint">Take or add a photo</string>
+    <string name="m_cat_otro">other</string>
+    <string name="m_money">$</string>
+
+    <!-- Configuracion Screen -->
+    <string name="c_title">Settings</string>
+    <string name="c_logout">Logout</string>
+    <string name="c_language">Language</string>
+    <string name="c_save_changes">Save Changes</string>
+    <string name="c_change_password">Change Password</string>
+    <string name="c_terms">Terms and Conditions</string>
+    <string name="c_privacy">Privacy Policy</string>
+
+    <string name="c_country">Country</string>
+    <string name="c_birthday">Birthday</string>
+    <string name="c_gender">Gender</string>
+    <string name="c_reauth_pass_title">Confirm Password</string>
+    <string name="c_reauth_pass_desc">For security, please enter your current password to change your email address.</string>
+    <string name="c_email_change_success">Email updated successfully. Please log in again.</string>
+    <string name="c_wrong_password">Incorrect password.</string>
+    <string name="c_pass_requirement">Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, and a number.</string>
+
+    <string name="c_date_format_hint">DD/MM/YYYY</string>
+
+    <string-array name="paises_america">
+        <item>Argentina</item>
+        <item>Bolivia</item>
+        <item>Brazil</item>
+        <item>Canada</item>
+        <item>Chile</item>
+        <item>Colombia</item>
+        <item>Costa Rica</item>
+        <item>Cuba</item>
+        <item>Ecuador</item>
+        <item>El Salvador</item>
+        <item>United States</item>
+        <item>Guatemala</item>
+        <item>Haiti</item>
+        <item>Honduras</item>
+        <item>Mexico</item>
+        <item>Nicaragua</item>
+        <item>Panama</item>
+        <item>Paraguay</item>
+        <item>Peru</item>
+        <item>Dominican Republic</item>
+        <item>Uruguay</item>
+        <item>Venezuela</item>
+    </string-array>
+
+    <string name="c_current_pass">Current Password</string>
+    <string name="c_new_pass">New Password</string>
+    <string name="c_save">Save</string>
+
+    <string name="d_main_cat_text">Your main category is %1$s with %2$d%% of the total.</string>
+    <string name="common_no_desc">No description</string>
+    <string name="common_error">Error</string>
+
+    <!-- Terms & Conditions Screen -->
+    <string name="terms_legal_1">1. Acceptance of Terms\nBy downloading and using Gasto Fácil, you agree to comply with these Terms and Conditions (\"Terms\"). This application is designed exclusively for personal expense tracking and management by individuals located in Colombia. If you do not agree with any part of these Terms, please refrain from downloading or using the application.</string>
+
+    <string name="terms_legal_2">2. Colombian Legal Framework\nThis application and its use are governed by the laws of the Republic of Colombia, including but not limited to Law 1581 of 2012 on the Protection of Personal Data and Decree 1377 of 2013. Gasto Fácil is provided as a personal record-keeping tool only. It does not constitute financial, tax, accounting, or investment advice, and we make no warranty, express or implied, regarding financial outcomes, savings results, or the accuracy of any projections generated from user-entered data.</string>
+
+    <string name="terms_legal_3">3. Use of Information and User Responsibility\nAll financial information, categories, amounts, and other data entered into the application are the sole responsibility of the user. Gasto Fácil allows users to capture photographs of receipts to facilitate expense logging; these images are stored locally on the user\'s device in accordance with the camera and storage permissions granted by the user through their device\'s operating system, and are not automatically uploaded to our servers unless the user explicitly enables a backup or sync feature, if available. Users are responsible for maintaining the confidentiality of their login credentials and for all activity conducted under their account.</string>
+
+    <string name="terms_legal_4">4. Modifications to These Terms\nWe reserve the right to modify, update, or replace these Terms at any time, at our sole discretion, in order to reflect changes in applicable law, our services, or business practices. Material changes will be communicated through an in-app notice where reasonably possible. Continued use of the application after such changes have been published constitutes your acceptance of the revised Terms. We recommend reviewing this section periodically.</string>
+
+    <!-- Privacy Screen -->
+    <string name="privacy_intro">Gasto Fácil values your privacy. In compliance with Colombian Law 1581 of 2012 (Habeas Data Law) and its regulatory Decree 1377 of 2013, we inform you of the following regarding the processing of your personal data:</string>
+
+    <string name="privacy_legal_1">1. Data We Collect\nWe collect your full name, email address, and phone number at the time of registration in order to personalize your experience, verify your identity, and enable secure access to the application. We may also process usage data (such as app interaction and device information) strictly for functionality and security purposes.</string>
+
+    <string name="privacy_legal_2">2. Purpose of Processing\nYour personal data will be used exclusively for: (a) managing your personal finances within the Gasto Fácil app; (b) sending service-related notifications, such as expense reminders, account alerts, or important updates about the application; and (c) improving the security and functionality of the service. Your data will not be sold to third parties, and will not be used for purposes other than those described here without your prior authorization.</string>
+
+    <string name="privacy_legal_3">3. Data Subject Rights\nAs a data subject under Colombian law, you have the right to know, update, rectify, and request the deletion of your personal data, as well as to revoke the authorization granted for its processing at any time, subject to legal or contractual limitations. You may exercise these rights directly from your profile settings within the app, or by contacting our support channel for assistance.</string>
+
+    <string name="privacy_legal_4">4. Security Measures\nWe implement reasonable technical, administrative, and organizational measures designed to protect your personal information against unauthorized access, loss, misuse, or alteration. By registering for and using Gasto Fácil, you expressly authorize the processing of your personal data in accordance with these guidelines and applicable Colombian data protection law.</string>
+
+    <!-- Toast and New UI messages -->
+    <string name="login_welcome">Welcome</string>
+    <string name="login_error_generic">Login error</string>
+    <string name="login_remember_me">Remember me</string>
+    <string name="login_show_password">Show password</string>
+    <string name="m_available_balance">Available: %s</string>
+    <string name="m_save_success">Movement recorded successfully</string>
+    <string name="m_save_error">Error saving to cloud</string>
+    <string name="m_insufficient_funds">Insufficient balance. You have: %s</string>
+    <string name="m_fill_fields">Please fill in all fields</string>
+    <string name="m_select_category">Please select a category</string>
+    <string name="m_enter_amount">Please enter an amount</string>
+    <string name="m_camera_error">Camera application not found</string>
+    <string name="m_already_in">You are already in Movements</string>
+    <string name="r_success">Account created successfully</string>
+    <string name="r_error_generic">Registration error</string>
+    <string name="c_profile_updated">Changes saved successfully</string>
+    <string name="c_logout_confirm">Session closed successfully</string>
+    <string name="c_password_updated">Password updated successfully</string>
+    <string name="c_password_error">Error updating password</string>
+    <string name="c_reauth_error">Authentication error</string>
+    <string name="c_enter_pass">Enter your password</string>
+    <string name="c_email_update_error">Error changing email: %s</string>
+    <string name="m_user_not_auth">Error: User not authenticated</string>
+    <string name="h_loading_error">Error loading history</string>
+    <string name="descripcion">No description</string>
+
+    <!-- Password requirements -->
+    <string name="pass_req_length">8+ characters</string>
+    <string name="pass_req_upper">One uppercase</string>
+    <string name="pass_req_lower">One lowercase</string>
+    <string name="pass_req_number">One number</string>
+    <string name="pass_req_special">One special character (@$!%*?&amp;)</string>
+    <string name="pass_req_match">Passwords match</string>
 </resources>

@@ -1,11 +1,14 @@
 package com.example.gastofacil;
 
 import android.graphics.Color;
+import android.net.Uri;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.text.NumberFormat;
@@ -63,6 +66,34 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         
         holder.tvDesc.setText(String.format("%s · %s", fechaFormateada, descripcion));
 
+        // Location Logic
+        if (transaction.getLatitude() != null && transaction.getLongitude() != null) {
+            holder.ivLocation.setVisibility(View.VISIBLE);
+            holder.ivLocation.setOnClickListener(v -> {
+                try {
+                    String uri = String.format(Locale.ENGLISH, "geo:%f,%f?q=%f,%f(Ubicación)", 
+                            transaction.getLatitude(), transaction.getLongitude(), 
+                            transaction.getLatitude(), transaction.getLongitude());
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                    intent.setPackage("com.google.android.apps.maps");
+                    v.getContext().startActivity(intent);
+                } catch (Exception e) {
+                    // Si falla Maps con el paquete, intentar sin el paquete
+                    try {
+                        String uri = String.format(Locale.ENGLISH, "geo:%f,%f?q=%f,%f", 
+                                transaction.getLatitude(), transaction.getLongitude(), 
+                                transaction.getLatitude(), transaction.getLongitude());
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                        v.getContext().startActivity(intent);
+                    } catch (Exception ex) {
+                        Toast.makeText(v.getContext(), "No se pudo abrir el mapa", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        } else {
+            holder.ivLocation.setVisibility(View.GONE);
+        }
+
         double monto = Double.parseDouble(transaction.getMonto());
         String montoFormateado = CurrencyUtils.formatShort(monto);
 
@@ -90,7 +121,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     public static class TransactionViewHolder extends RecyclerView.ViewHolder {
         TextView tvName, tvDesc, tvValue;
-        ImageView ivIcon;
+        ImageView ivIcon, ivLocation;
 
         public TransactionViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -98,6 +129,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             tvDesc = itemView.findViewById(R.id.tvTransDesc);
             tvValue = itemView.findViewById(R.id.tvTransValue);
             ivIcon = itemView.findViewById(R.id.ivTransIcon);
+            ivLocation = itemView.findViewById(R.id.ivLocationIcon);
         }
     }
 }

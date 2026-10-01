@@ -132,7 +132,7 @@ public class HistoriaActivity extends AppCompatActivity implements TransactionAd
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     G_Ingresos ing = ds.getValue(G_Ingresos.class);
                     if (ing != null) {
-                        mapTransactions.put(ing.getId(), new TransactionModel(ing.getId(), ing.getMonto(), ing.getCategoria(), ing.getFecha(), ing.getDescripcion(), "INGRESO", ing.getImagenBase64(), ing.getTimestamp()));
+                        mapTransactions.put(ing.getId(), new TransactionModel(ing.getId(), ing.getMonto(), ing.getCategoria(), ing.getFecha(), ing.getDescripcion(), "INGRESO", ing.getImagenBase64(), ing.getTimestamp(), ing.getLatitude(), ing.getLongitude()));
                     }
                 }
                 actualizarUI();
@@ -149,7 +149,7 @@ public class HistoriaActivity extends AppCompatActivity implements TransactionAd
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     G_Egresos egr = ds.getValue(G_Egresos.class);
                     if (egr != null) {
-                        mapTransactions.put(egr.getId(), new TransactionModel(egr.getId(), egr.getMonto(), egr.getCategoria(), egr.getFecha(), egr.getDescripcion(), "EGRESO", egr.getImagenBase64(), egr.getTimestamp()));
+                        mapTransactions.put(egr.getId(), new TransactionModel(egr.getId(), egr.getMonto(), egr.getCategoria(), egr.getFecha(), egr.getDescripcion(), "EGRESO", egr.getImagenBase64(), egr.getTimestamp(), egr.getLatitude(), egr.getLongitude()));
                     }
                 }
                 actualizarUI();
@@ -197,6 +197,9 @@ public class HistoriaActivity extends AppCompatActivity implements TransactionAd
         TextView tvMonto = dialog.findViewById(R.id.tvDetalleMonto);
         TextView tvFecha = dialog.findViewById(R.id.tvDetalleFecha);
         TextView tvNota = dialog.findViewById(R.id.tvDetalleNota);
+        LinearLayout llUbicacion = dialog.findViewById(R.id.llDetalleUbicacion);
+        TextView tvCoordenadas = dialog.findViewById(R.id.tvDetalleCoordenadas);
+        android.widget.ImageButton btnVerMapa = dialog.findViewById(R.id.btnVerEnMapa);
         ImageView ivFoto = dialog.findViewById(R.id.ivDetalleFoto);
         TextView tvSinEvidencia = dialog.findViewById(R.id.tvSinEvidencia);
         Button btnCerrar = dialog.findViewById(R.id.btnCerrarDetalle);
@@ -224,6 +227,30 @@ public class HistoriaActivity extends AppCompatActivity implements TransactionAd
             tvNota.setText(transaction.getDescripcion());
         } else {
             tvNota.setText(getString(R.string.common_no_desc));
+        }
+
+        // Lógica de Ubicación en el Detalle
+        if (transaction.getLatitude() != null && transaction.getLongitude() != null) {
+            llUbicacion.setVisibility(View.VISIBLE);
+            tvCoordenadas.setText(String.format(Locale.ENGLISH, "%.6f, %.6f", transaction.getLatitude(), transaction.getLongitude()));
+            btnVerMapa.setOnClickListener(v -> {
+                try {
+                    String uri = String.format(Locale.ENGLISH, "geo:%f,%f?q=%f,%f(Ubicación)", 
+                            transaction.getLatitude(), transaction.getLongitude(), 
+                            transaction.getLatitude(), transaction.getLongitude());
+                    Intent intent = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(uri));
+                    intent.setPackage("com.google.android.apps.maps");
+                    startActivity(intent);
+                } catch (Exception e) {
+                    String uri = String.format(Locale.ENGLISH, "geo:%f,%f?q=%f,%f", 
+                            transaction.getLatitude(), transaction.getLongitude(), 
+                            transaction.getLatitude(), transaction.getLongitude());
+                    Intent intent = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(uri));
+                    startActivity(intent);
+                }
+            });
+        } else {
+            llUbicacion.setVisibility(View.GONE);
         }
 
         if (transaction.getImagenBase64() != null && !transaction.getImagenBase64().isEmpty()) {

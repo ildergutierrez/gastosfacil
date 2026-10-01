@@ -278,46 +278,59 @@
                 android:inputType="text"
                 android:autofillHints="none" />
 
-            <!-- Photo Container -->
-            <RelativeLayout
-                android:id="@+id/rlPhotoPicker"
+            <!-- Photo & Location Container -->
+            <LinearLayout
+                android:id="@+id/llPhotoLocationContainer"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/rounded_input"
-                android:paddingHorizontal="16dp"
-                android:clickable="true"
-                android:focusable="true">
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp">
 
                 <ImageView
                     android:id="@+id/ivCameraIcon"
                     android:layout_width="44dp"
                     android:layout_height="44dp"
-                    android:layout_centerVertical="true"
                     android:src="@drawable/ic_camera"
-                    app:tint="#000000" />
+                    app:tint="#000000"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/m_photo_hint" />
 
                 <TextView
                     android:id="@+id/tvPhotoHint"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toEndOf="@id/ivCameraIcon"
-                    android:layout_marginStart="15dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
                     android:text="@string/m_photo_hint"
                     android:textColor="#B0BEC5"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:gravity="center" />
 
                 <ImageView
                     android:id="@+id/ivCapturedPhoto"
-                    android:layout_width="65dp"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginVertical="8dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:scaleType="centerCrop"
                     android:visibility="gone"
-                    android:contentDescription="@string/m_photo_hint"/>
-            </RelativeLayout>
+                    android:layout_marginEnd="8dp"/>
+
+                <ImageView
+                    android:id="@+id/ivMapIcon"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:src="@drawable/ic_map"
+                    app:tint="#000000"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/ng_date_label" />
+            </LinearLayout>
 
             <!-- Confirm Button -->
             <FrameLayout

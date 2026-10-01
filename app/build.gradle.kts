@@ -16,6 +16,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // La key se lee desde gradle.properties (MAPTILER_KEY=tu_key). Sin valor por defecto.
+        val mapKey = project.findProperty("MAPTILER_KEY") as? String ?: ""
+        buildConfigField("String", "MAPTILER_KEY", "\"$mapKey\"")
     }
 
     buildTypes {
@@ -32,7 +36,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
     buildFeatures {
-        compose = true
+        buildConfig = true
     }
 
     packaging {
@@ -43,24 +47,29 @@ android {
 }
 
 dependencies {
-    implementation(platform(libs.compose.bom))
     implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics)
+    implementation(platform(libs.firebase.analytics))
     implementation(libs.firebase.auth)
     implementation(libs.firebase.database)
     implementation(libs.firebase.storage)
     implementation(libs.glide)
     implementation(libs.firebase.firestore)
-    implementation(libs.activity.compose)
     implementation(libs.appcompat)
     implementation(libs.firebase.ai)
-    implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.material)
-    implementation(libs.material3)
+
+    // Compose dependencies
+    implementation(platform(libs.compose.bom))
     implementation(libs.ui)
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
-    
+    implementation(libs.material3)
+    implementation(libs.activity.compose)
+    implementation(libs.lifecycle.runtime.ktx)
+
+    // Play Services for Location
+    implementation(libs.play.services.location)
+
     // CameraX dependencies
     val camerax_version = "1.4.1"
     implementation("androidx.camera:camera-core:${camerax_version}")
@@ -68,12 +77,12 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:${camerax_version}")
     implementation("androidx.camera:camera-view:${camerax_version}")
     implementation("androidx.camera:camera-extensions:${camerax_version}")
-    
+
+    // OpenStreetMap & MapLibre
+    implementation("org.osmdroid:osmdroid-android:6.1.20")
+    implementation("org.maplibre.gl:android-sdk:13.6.1")
+
     testImplementation(libs.junit)
-    androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.ext.junit)
-    androidTestImplementation(libs.ui.test.junit4)
-    debugImplementation(libs.ui.test.manifest)
-    debugImplementation(libs.ui.tooling)
 }

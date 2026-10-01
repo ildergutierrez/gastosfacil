@@ -18,16 +18,28 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.Manifest;
+import android.content.pm.PackageManager;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.CurrentLocationRequest;
+import com.google.android.gms.location.Priority;
+import android.location.Address;
+import android.location.Geocoder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -39,15 +51,46 @@ public class MovimientosActivity extends AppCompatActivity {
     private TextView tvAmountLabel, tvDateDisplay, tvAvailableBalanceM;
     private EditText etAmount, etNote;
     private TextView tvCatComida, tvCatTransporte, tvCatEstudio, tvCatOtro;
-    private RelativeLayout rlDatePicker, rlPhotoPicker;
+    private RelativeLayout rlDatePicker;
+    private LinearLayout llPhotoLocationContainer;
     private Button btnConfirm;
-    private ImageView ivCapturedPhoto;
+    private ImageView ivCapturedPhoto, ivMapIcon;
 
     private String selectedCategory = "";
     private Bitmap capturedBitmap = null;
+    private Double selectedLat = null;
+    private Double selectedLng = null;
+    private FusedLocationProviderClient fusedLocationClient;
+
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
     private double saldoActual = 0.0;
+
+    private final ActivityResultLauncher<String[]> locationPermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestMultiplePermissions(),
+            result -> {
+                Boolean fineLocationGranted = result.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false);
+                Boolean coarseLocationGranted = result.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false);
+                if (fineLocationGranted != null && fineLocationGranted) {
+                    getCurrentLocation();
+                } else if (coarseLocationGranted != null && coarseLocationGranted) {
+                    getCurrentLocation();
+                } else {
+                    Toast.makeText(this, "Permiso de ubicación denegado", Toast.LENGTH_SHORT).show();
+                }
+            }
+    );
+
+    private final ActivityResultLauncher<Intent> locationPickerLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    selectedLat = result.getData().getDoubleExtra("lat", 0);
+                    selectedLng = result.getData().getDoubleExtra("lng", 0);
+                    Toast.makeText(this, "Ubicación seleccionada manualmente", Toast.LENGTH_SHORT).show();
+                }
+            }
+    );
 
     private final ActivityResultLauncher<Intent> cameraLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -96,9 +139,13 @@ public class MovimientosActivity extends AppCompatActivity {
         tvCatEstudio = findViewById(R.id.tvCatEstudio);
         tvCatOtro = findViewById(R.id.tvCatOtro);
         rlDatePicker = findViewById(R.id.rlDatePicker);
-        rlPhotoPicker = findViewById(R.id.rlPhotoPicker);
+        llPhotoLocationContainer = findViewById(R.id.llPhotoLocationContainer);
         btnConfirm = findViewById(R.id.btnConfirm);
         ivCapturedPhoto = findViewById(R.id.ivCapturedPhoto);
+        ivMapIcon = findViewById(R.id.ivMapIcon);
+        
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        requestLocationPermissions();
 
         // Navigation
         LinearLayout navHome = findViewById(R.id.navHome);
@@ -152,14 +199,24 @@ public class MovimientosActivity extends AppCompatActivity {
         // Date Picker
         rlDatePicker.setOnClickListener(v -> showDatePicker());
 
-        // Photo Picker
-        rlPhotoPicker.setOnClickListener(v -> {
+        // Photo Picker specific click (Camera)
+        findViewById(R.id.ivCameraIcon).setOnClickListener(v -> {
             Intent takePictureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
             if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                 cameraLauncher.launch(takePictureIntent);
             } else {
                 Toast.makeText(this, getString(R.string.m_camera_error), Toast.LENGTH_SHORT).show();
             }
+        });
+
+        // Location Picker click (Map)
+        ivMapIcon.setOnClickListener(v -> {
+            Intent intent = new Intent(this, LocationPickerActivity.class);
+            if (selectedLat != null && selectedLng != null) {
+                intent.putExtra("lat", selectedLat);
+                intent.putExtra("lng", selectedLng);
+            }
+            locationPickerLauncher.launch(intent);
         });
 
         // Confirm Button
@@ -232,7 +289,7 @@ public class MovimientosActivity extends AppCompatActivity {
 
         // Crear objeto
         String id = mDatabase.child("egresos").child(userId).push().getKey();
-        G_Egresos egreso = new G_Egresos(id, montoStr, selectedCategory, fecha, nota, b64Image, System.currentTimeMillis());
+        G_Egresos egreso = new G_Egresos(id, montoStr, selectedCategory, fecha, nota, b64Image, System.currentTimeMillis(), selectedLat, selectedLng);
 
         // Guardar en Firebase
         if (id != null) {
@@ -294,7 +351,7 @@ public class MovimientosActivity extends AppCompatActivity {
 
         // Crear objeto
         String id = mDatabase.child("ingresos").child(userId).push().getKey();
-        G_Ingresos ingreso = new G_Ingresos(id, montoStr, selectedCategory, fecha, nota, b64Image, System.currentTimeMillis());
+        G_Ingresos ingreso = new G_Ingresos(id, montoStr, selectedCategory, fecha, nota, b64Image, System.currentTimeMillis(), selectedLat, selectedLng);
 
         // Guardar en Firebase
         if (id != null) {
@@ -333,6 +390,67 @@ public class MovimientosActivity extends AppCompatActivity {
         } catch (Exception e) {
             return "";
         }
+    }
+
+    private void requestLocationPermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            locationPermissionLauncher.launch(new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+            });
+        } else {
+            getCurrentLocation();
+        }
+    }
+
+    private void getCurrentLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        CurrentLocationRequest request = new CurrentLocationRequest.Builder()
+                .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+                .setDurationMillis(10000)
+                .build();
+
+        fusedLocationClient.getCurrentLocation(request, null).addOnSuccessListener(this, location -> {
+            if (location != null) {
+                selectedLat = location.getLatitude();
+                selectedLng = location.getLongitude();
+                String address = getAddressFromCoordinates(this, selectedLat, selectedLng);
+                Toast.makeText(this, "Dirección real: " + address, Toast.LENGTH_LONG).show();
+            } else {
+                fusedLocationClient.getLastLocation().addOnSuccessListener(this, lastLoc -> {
+                    if (lastLoc != null) {
+                        selectedLat = lastLoc.getLatitude();
+                        selectedLng = lastLoc.getLongitude();
+                        String address = getAddressFromCoordinates(this, selectedLat, selectedLng);
+                        Toast.makeText(this, "Dirección (última conocida): " + address, Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(this, "No se pudo obtener el GPS. Toca el mapa para seleccionar.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        });
+    }
+
+    private String getAddressFromCoordinates(android.content.Context context, double lat, double lng) {
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
+            if (addresses != null && !addresses.isEmpty()) {
+                Address address = addresses.get(0);
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i <= address.getMaxAddressLineIndex(); i++) {
+                    sb.append(address.getAddressLine(i));
+                    if (i < address.getMaxAddressLineIndex()) sb.append(", ");
+                }
+                return sb.toString();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return String.format(Locale.getDefault(), "Lat: %.4f, Lng: %.4f", lat, lng);
     }
 
     private void updateToggleUI() {

@@ -44,6 +44,16 @@
                 android:text="@string/d_trans_netflix_desc"
                 android:textColor="#757575"
                 android:textSize="12sp" />
+
+            <ImageView
+                android:id="@+id/ivLocationIcon"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginTop="4dp"
+                android:src="@drawable/ic_location"
+                app:tint="@color/nav_active"
+                android:visibility="gone"
+                android:contentDescription="@string/logo" />
         </LinearLayout>
 
         <TextView

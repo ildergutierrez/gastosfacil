@@ -82,6 +82,9 @@ dependencies {
     implementation("org.osmdroid:osmdroid-android:6.1.20")
     implementation("org.maplibre.gl:android-sdk:13.6.1")
 
+    // Biometric
+    implementation("androidx.biometric:biometric:1.1.0")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.ext.junit)

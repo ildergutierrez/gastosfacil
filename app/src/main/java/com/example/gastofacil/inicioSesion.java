@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.FirebaseApp;
@@ -39,6 +40,12 @@ public class inicioSesion extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         setContentView(R.layout.activity_inicio_sesion);
+
+        android.content.SharedPreferences loginPrefs = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
+        boolean biometricEnabled = loginPrefs.getBoolean("biometric_enabled", false);
+        if (biometricEnabled && savedInstanceState == null) {
+            triggerBiometricLogin(loginPrefs);
+        }
 
         EditText etUser = findViewById(R.id.etUser);
         EditText etPassword = findViewById(R.id.etPassword);
@@ -169,5 +176,69 @@ public class inicioSesion extends AppCompatActivity {
             Intent intent = new Intent(inicioSesion.this, RegistroActivity.class);
             startActivity(intent);
         });
+    }
+
+    private void triggerBiometricLogin(android.content.SharedPreferences prefs) {
+        String email = prefs.getString("biometric_email", prefs.getString("email", ""));
+        String password = prefs.getString("biometric_password", prefs.getString("password", ""));
+
+        if (email.isEmpty() || password.isEmpty()) {
+            return;
+        }
+
+        java.util.concurrent.Executor executor = androidx.core.content.ContextCompat.getMainExecutor(this);
+        androidx.biometric.BiometricPrompt biometricPrompt = new androidx.biometric.BiometricPrompt(inicioSesion.this, executor, new androidx.biometric.BiometricPrompt.AuthenticationCallback() {
+            @Override
+            public void onAuthenticationSucceeded(@NonNull androidx.biometric.BiometricPrompt.AuthenticationResult result) {
+                super.onAuthenticationSucceeded(result);
+                ProgressBar pbLogin = findViewById(R.id.pbLogin);
+                Button btnIngresar = findViewById(R.id.btnIngresar);
+                btnIngresar.setEnabled(false);
+                pbLogin.setVisibility(View.VISIBLE);
+
+                mAuth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(inicioSesion.this, task -> {
+                            pbLogin.setVisibility(View.GONE);
+                            btnIngresar.setEnabled(true);
+                            if (task.isSuccessful()) {
+                                String userId = mAuth.getCurrentUser().getUid();
+                                FirebaseDatabase.getInstance().getReference("usuarios").child(userId).child("idioma").get()
+                                        .addOnCompleteListener(dbTask -> {
+                                            String lang = "es";
+                                            if (dbTask.isSuccessful() && dbTask.getResult().getValue() != null) {
+                                                lang = dbTask.getResult().getValue().toString();
+                                            }
+                                            LocaleHelper.applyLocale(inicioSesion.this, lang);
+
+                                            Toast.makeText(inicioSesion.this, getString(R.string.login_welcome), Toast.LENGTH_SHORT).show();
+                                            Intent intent = new Intent(inicioSesion.this, DashboardActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                        });
+                            } else {
+                                Toast.makeText(inicioSesion.this, "Error al iniciar sesión con biometría", Toast.LENGTH_LONG).show();
+                            }
+                        });
+            }
+
+            @Override
+            public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
+                super.onAuthenticationError(errorCode, errString);
+            }
+
+            @Override
+            public void onAuthenticationFailed() {
+                super.onAuthenticationFailed();
+                Toast.makeText(inicioSesion.this, "Huella no reconocida", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        androidx.biometric.BiometricPrompt.PromptInfo promptInfo = new androidx.biometric.BiometricPrompt.PromptInfo.Builder()
+                .setTitle("Iniciar sesión con Biometría")
+                .setSubtitle("Confirma tu huella para acceder a tu cuenta")
+                .setNegativeButtonText("Usar contraseña")
+                .build();
+
+        biometricPrompt.authenticate(promptInfo);
     }
 }

@@ -76,18 +76,9 @@ public class HistoriaActivity extends AppCompatActivity implements TransactionAd
             actualizarUI();
         });
 
-        ImageButton btnLogo = findViewById(R.id.btnLogoHistoria);
         LinearLayout navHome = findViewById(R.id.navHomeH);
         LinearLayout navExpenses = findViewById(R.id.navExpensesH);
         LinearLayout navCharts = findViewById(R.id.navChartsH);
-
-        btnLogo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HistoriaActivity.this, ConfiguracionActivity.class);
-                startActivity(intent);
-            }
-        });
 
         navHome.setOnClickListener(new View.OnClickListener() {
             @Override

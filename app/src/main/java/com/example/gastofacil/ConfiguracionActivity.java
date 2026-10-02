@@ -125,11 +125,30 @@ public class ConfiguracionActivity extends AppCompatActivity {
             }
         });
 
-        // Cerrar sesión / Biometría
+        // Cerrar sesión
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showLogoutOrBiometricDialog();
+                mAuth.signOut();
+                Intent intent = new Intent(ConfiguracionActivity.this, inicioSesion.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+                Toast.makeText(ConfiguracionActivity.this, getString(R.string.c_logout_confirm), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        androidx.appcompat.widget.SwitchCompat switchBiometria = findViewById(R.id.switchBiometria);
+        android.content.SharedPreferences loginPrefs = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
+        boolean biometricEnabled = loginPrefs.getBoolean("biometric_enabled", false);
+        switchBiometria.setChecked(biometricEnabled);
+
+        switchBiometria.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                promptAndEnableBiometrics(switchBiometria);
+            } else {
+                loginPrefs.edit().putBoolean("biometric_enabled", false).apply();
+                Toast.makeText(ConfiguracionActivity.this, "Biometría desactivada", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -423,6 +442,7 @@ public class ConfiguracionActivity extends AppCompatActivity {
                             
                             // Cerrar sesión
                             mAuth.signOut();
+                            getSharedPreferences("LoginPrefs", MODE_PRIVATE).edit().clear().apply();
                             Intent intent = new Intent(ConfiguracionActivity.this, inicioSesion.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
@@ -448,37 +468,22 @@ public class ConfiguracionActivity extends AppCompatActivity {
         return password.matches(pattern);
     }
 
-    private void showLogoutOrBiometricDialog() {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-        builder.setTitle("Opciones de Sesión");
-        builder.setItems(new CharSequence[]{"Cerrar Sesión", "Iniciar sesión con biometría"}, (dialog1, which) -> {
-            if (which == 0) {
-                mAuth.signOut();
-                Intent intent = new Intent(ConfiguracionActivity.this, inicioSesion.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
-                Toast.makeText(ConfiguracionActivity.this, getString(R.string.c_logout_confirm), Toast.LENGTH_SHORT).show();
-            } else if (which == 1) {
-                promptAndEnableBiometrics();
-            }
-        });
-        builder.show();
-    }
-
-    private void promptAndEnableBiometrics() {
+    private void promptAndEnableBiometrics(androidx.appcompat.widget.SwitchCompat switchBiometria) {
         androidx.biometric.BiometricManager biometricManager = androidx.biometric.BiometricManager.from(this);
         switch (biometricManager.canAuthenticate(androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG | androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL)) {
             case androidx.biometric.BiometricManager.BIOMETRIC_SUCCESS:
                 break;
             case androidx.biometric.BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE:
                 Toast.makeText(this, "Este dispositivo no cuenta con sensor biométrico", Toast.LENGTH_SHORT).show();
+                switchBiometria.setChecked(false);
                 return;
             case androidx.biometric.BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED:
-                Toast.makeText(this, "No hay huellas registradas en el dispositivo. Configúralas en Ajustes.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "No hay huellas registradas en el dispositivo.", Toast.LENGTH_LONG).show();
+                switchBiometria.setChecked(false);
                 return;
             default:
                 Toast.makeText(this, "Autenticación biométrica no disponible", Toast.LENGTH_SHORT).show();
+                switchBiometria.setChecked(false);
                 return;
         }
 
@@ -487,13 +492,18 @@ public class ConfiguracionActivity extends AppCompatActivity {
         String savedEmail = prefs.getString("email", "");
 
         if (savedPassword.isEmpty() || savedEmail.isEmpty()) {
-            showPasswordForBiometricDialog(prefs);
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            if (currentUser != null && currentUser.getEmail() != null) {
+                showPasswordForBiometricDialog(prefs, switchBiometria, currentUser.getEmail());
+            } else {
+                switchBiometria.setChecked(false);
+            }
         } else {
-            authenticateWithBiometric(prefs, savedEmail, savedPassword);
+            authenticateWithBiometric(prefs, savedEmail, savedPassword, switchBiometria);
         }
     }
 
-    private void showPasswordForBiometricDialog(android.content.SharedPreferences prefs) {
+    private void showPasswordForBiometricDialog(android.content.SharedPreferences prefs, androidx.appcompat.widget.SwitchCompat switchBiometria, String email) {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         
@@ -502,7 +512,7 @@ public class ConfiguracionActivity extends AppCompatActivity {
         layout.setPadding(50, 40, 50, 40);
 
         TextView tv = new TextView(this);
-        tv.setText("Ingresa tu contraseña actual para activar el inicio con biometría (validando que es tu cuenta):");
+        tv.setText("Ingresa tu contraseña actual para activar el inicio con biometría:");
         tv.setTextColor(Color.BLACK);
         tv.setTextSize(14f);
         layout.addView(tv);
@@ -526,6 +536,8 @@ public class ConfiguracionActivity extends AppCompatActivity {
             dialog.getWindow().setLayout(width, WindowManager.LayoutParams.WRAP_CONTENT);
         }
 
+        dialog.setOnCancelListener(dialogInterface -> switchBiometria.setChecked(false));
+
         btnConfirm.setOnClickListener(v -> {
             String pass = etPass.getText().toString().trim();
             FirebaseUser user = mAuth.getCurrentUser();
@@ -541,9 +553,10 @@ public class ConfiguracionActivity extends AppCompatActivity {
                     android.content.SharedPreferences.Editor editor = prefs.edit();
                     editor.putString("email", user.getEmail());
                     editor.putString("password", pass);
+                    editor.putBoolean("remember", true);
                     editor.apply();
 
-                    authenticateWithBiometric(prefs, user.getEmail(), pass);
+                    authenticateWithBiometric(prefs, user.getEmail(), pass, switchBiometria);
                 } else {
                     Toast.makeText(this, "Contraseña incorrecta", Toast.LENGTH_SHORT).show();
                 }
@@ -551,7 +564,7 @@ public class ConfiguracionActivity extends AppCompatActivity {
         });
     }
 
-    private void authenticateWithBiometric(android.content.SharedPreferences prefs, String email, String password) {
+    private void authenticateWithBiometric(android.content.SharedPreferences prefs, String email, String password, androidx.appcompat.widget.SwitchCompat switchBiometria) {
         java.util.concurrent.Executor executor = androidx.core.content.ContextCompat.getMainExecutor(this);
         androidx.biometric.BiometricPrompt biometricPrompt = new androidx.biometric.BiometricPrompt(ConfiguracionActivity.this, executor, new androidx.biometric.BiometricPrompt.AuthenticationCallback() {
             @Override
@@ -561,21 +574,23 @@ public class ConfiguracionActivity extends AppCompatActivity {
                 editor.putBoolean("biometric_enabled", true);
                 editor.putString("biometric_email", email);
                 editor.putString("biometric_password", password);
+                editor.putBoolean("remember", true);
                 editor.apply();
 
-                Toast.makeText(ConfiguracionActivity.this, "¡Inicio de sesión con biometría activado exitosamente!", Toast.LENGTH_LONG).show();
+                Toast.makeText(ConfiguracionActivity.this, "¡Inicio con biometría activado!", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
                 super.onAuthenticationError(errorCode, errString);
-                Toast.makeText(ConfiguracionActivity.this, "Autenticación cancelada o fallida: " + errString, Toast.LENGTH_SHORT).show();
+                switchBiometria.setChecked(false);
+                Toast.makeText(ConfiguracionActivity.this, "Cancelado", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onAuthenticationFailed() {
                 super.onAuthenticationFailed();
-                Toast.makeText(ConfiguracionActivity.this, "Huella no reconocida. Intenta de nuevo.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ConfiguracionActivity.this, "Huella no reconocida", Toast.LENGTH_SHORT).show();
             }
         });
 

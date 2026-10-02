@@ -46,7 +46,7 @@ public class HistoriaActivity extends AppCompatActivity implements TransactionAd
     private TransactionAdapter adapter;
     private Button btnVerMas;
     private List<TransactionModel> listFull = new ArrayList<>();
-    private List<TransactionModel> listDisplayed = new ArrayList<>();
+    private List<HistoryItem> historyItems = new ArrayList<>();
     private Map<String, TransactionModel> mapTransactions = new HashMap<>();
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
@@ -67,7 +67,7 @@ public class HistoriaActivity extends AppCompatActivity implements TransactionAd
 
         rvHistorial = findViewById(R.id.rvHistorial);
         rvHistorial.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new TransactionAdapter(listDisplayed, this);
+        adapter = new TransactionAdapter(historyItems, this);
         rvHistorial.setAdapter(adapter);
 
         btnVerMas = findViewById(R.id.btnVerMas);
@@ -158,10 +158,28 @@ public class HistoriaActivity extends AppCompatActivity implements TransactionAd
         // Ordenar por timestamp (los más recientes primero)
         Collections.sort(listFull, (t1, t2) -> Long.compare(t2.getTimestamp(), t1.getTimestamp()));
         
-        listDisplayed.clear();
+        historyItems.clear();
+        SimpleDateFormat sdfMonthYear = new SimpleDateFormat("MMMM yyyy", new Locale("es", "ES"));
+        String lastMonthYear = "";
+
         int end = Math.min(displayedCount, listFull.size());
         for (int i = 0; i < end; i++) {
-            listDisplayed.add(listFull.get(i));
+            TransactionModel t = listFull.get(i);
+            String monthYear = "";
+            if (t.getTimestamp() > 0) {
+                monthYear = sdfMonthYear.format(new Date(t.getTimestamp()));
+                if (!monthYear.isEmpty()) {
+                    monthYear = monthYear.substring(0, 1).toUpperCase() + monthYear.substring(1);
+                }
+            } else {
+                monthYear = "Otros";
+            }
+
+            if (!monthYear.equals(lastMonthYear)) {
+                historyItems.add(new HistoryItem(monthYear));
+                lastMonthYear = monthYear;
+            }
+            historyItems.add(new HistoryItem(t));
         }
 
         if (listFull.size() > displayedCount) {

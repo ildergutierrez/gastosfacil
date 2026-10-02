@@ -108,6 +108,7 @@
     <string name="g_pct_transp">20%</string>
     <string name="g_val_study">$60.00</string>
     <string name="g_pct_study">15%</string>
+    <string name="c_biometric_login">Login with biometrics</string>
     <string name="g_val_leisure">$80.00</string>
     <string name="g_pct_leisure">20%</string>
 

@@ -148,6 +148,7 @@
     <string name="c_email_change_success">Correo electrónico actualizado. Por favor, inicia sesión de nuevo.</string>
     <string name="c_wrong_password">Contraseña incorrecta.</string>
     <string name="c_pass_requirement">La contraseña debe tener al menos 8 caracteres, incluir una mayúscula, una minúscula y un número.</string>
+    <string name="c_biometric_login">Iniciar sesión con biometría</string>
 
     <string name="c_date_format_hint">DD/MM/AAAA</string>
 

@@ -120,6 +120,49 @@ public class DashboardActivity extends AppCompatActivity {
     private void cargarResumen() {
         String userId = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getUid() : null;
         if (userId != null) {
+            java.util.Calendar cal = java.util.Calendar.getInstance();
+            cal.set(java.util.Calendar.DAY_OF_MONTH, 1);
+            cal.set(java.util.Calendar.HOUR_OF_DAY, 0);
+            cal.set(java.util.Calendar.MINUTE, 0);
+            cal.set(java.util.Calendar.SECOND, 0);
+            cal.set(java.util.Calendar.MILLISECOND, 0);
+            long startOfMonth = cal.getTimeInMillis();
+
+            cal.add(java.util.Calendar.MONTH, 1);
+            long endOfMonth = cal.getTimeInMillis();
+
+            mDatabase.child("ingresos").child(userId).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    double totalInc = 0;
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        G_Ingresos ing = ds.getValue(G_Ingresos.class);
+                        if (ing != null && ing.getTimestamp() >= startOfMonth && ing.getTimestamp() < endOfMonth) {
+                            totalInc += Double.parseDouble(ing.getMonto());
+                        }
+                    }
+                    tvIncomes.setText("+" + CurrencyUtils.formatShort(totalInc));
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {}
+            });
+
+            mDatabase.child("egresos").child(userId).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    double totalExp = 0;
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        G_Egresos egr = ds.getValue(G_Egresos.class);
+                        if (egr != null && egr.getTimestamp() >= startOfMonth && egr.getTimestamp() < endOfMonth) {
+                            totalExp += Double.parseDouble(egr.getMonto());
+                        }
+                    }
+                    tvExpenses.setText("-" + CurrencyUtils.formatShort(totalExp));
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {}
+            });
+
             mDatabase.child("usuarios").child(userId).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -127,12 +170,6 @@ public class DashboardActivity extends AppCompatActivity {
                         gasto_user user = snapshot.getValue(gasto_user.class);
                         if (user != null) {
                             tvBalance.setText(CurrencyUtils.formatBalance(user.getSaldo()));
-                            
-                            // Formato abreviado para ingresos y gastos
-                            String inc = CurrencyUtils.formatShort(user.getTotalIngresos());
-                            String exp = CurrencyUtils.formatShort(user.getTotalEgresos());
-                            tvIncomes.setText("+" + inc);
-                            tvExpenses.setText("-" + exp);
                         }
                     }
                 }
@@ -144,11 +181,11 @@ public class DashboardActivity extends AppCompatActivity {
             });
             
             // Cargar categoría principal para el texto del dashboard
-            cargarCategoriaPrincipal(userId);
+            cargarCategoriaPrincipal(userId, startOfMonth, endOfMonth);
         }
     }
 
-    private void cargarCategoriaPrincipal(String userId) {
+    private void cargarCategoriaPrincipal(String userId, long startOfMonth, long endOfMonth) {
         mDatabase.child("egresos").child(userId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -161,11 +198,20 @@ public class DashboardActivity extends AppCompatActivity {
                 double total = 0;
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     G_Egresos egr = ds.getValue(G_Egresos.class);
-                    if (egr != null) {
+                    if (egr != null && egr.getTimestamp() >= startOfMonth && egr.getTimestamp() < endOfMonth) {
                         double m = Double.parseDouble(egr.getMonto());
                         total += m;
                         conteo.put(egr.getCategoria(), conteo.getOrDefault(egr.getCategoria(), 0.0) + m);
                     }
+                }
+
+                if (total == 0) {
+                    findViewById(R.id.tvSummaryDesc).setVisibility(View.GONE);
+                    TextView tvChartPercent = findViewById(R.id.tvDashboardChartPercent);
+                    PieChartView pieChart = findViewById(R.id.dashboardPieChart);
+                    if (tvChartPercent != null) tvChartPercent.setText("0%");
+                    if (pieChart != null) pieChart.setData(new HashMap<>());
+                    return;
                 }
 
                 String maxCat = "";

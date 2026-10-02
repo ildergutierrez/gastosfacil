@@ -41,12 +41,6 @@ public class inicioSesion extends AppCompatActivity {
 
         setContentView(R.layout.activity_inicio_sesion);
 
-        android.content.SharedPreferences loginPrefs = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
-        boolean biometricEnabled = loginPrefs.getBoolean("biometric_enabled", false);
-        if (biometricEnabled && savedInstanceState == null) {
-            triggerBiometricLogin(loginPrefs);
-        }
-
         EditText etUser = findViewById(R.id.etUser);
         EditText etPassword = findViewById(R.id.etPassword);
         Button btnIngresar = findViewById(R.id.btnIngresar);
@@ -55,19 +49,23 @@ public class inicioSesion extends AppCompatActivity {
         ImageButton btnShowPassword = findViewById(R.id.btnShowPassword);
         CheckBox cbRememberMe = findViewById(R.id.cbRememberMe);
 
-        // Recordarme: Cargar datos guardados
         android.content.SharedPreferences prefs = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
         boolean remember = prefs.getBoolean("remember", false);
+        boolean biometricEnabled = prefs.getBoolean("biometric_enabled", false);
+
         if (remember) {
             etUser.setText(prefs.getString("email", ""));
             etPassword.setText(prefs.getString("password", ""));
             cbRememberMe.setChecked(true);
             
-            // Si ya hay datos, habilitar el botón
             if (!etUser.getText().toString().isEmpty() && !etPassword.getText().toString().isEmpty()) {
                 btnIngresar.setEnabled(true);
                 btnIngresar.setAlpha(1.0f);
             }
+        }
+
+        if (biometricEnabled && remember && savedInstanceState == null) {
+            triggerBiometricLogin(prefs);
         }
 
         // Mostrar/Ocultar contraseña

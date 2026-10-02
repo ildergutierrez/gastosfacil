@@ -8,18 +8,19 @@
     tools:context=".ConfiguracionActivity">
 
     <!-- Top Bar -->
+
     <ImageButton
         android:id="@+id/btnLogoConfig"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="93dp"
+        android:layout_height="95dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="12dp"
         android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/logo"
         android:scaleType="fitCenter"
         android:src="@drawable/icono"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/logo" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvTitleConfig"
@@ -34,21 +35,22 @@
         app:layout_constraintStart_toEndOf="@+id/btnLogoConfig"
         app:layout_constraintTop_toTopOf="@+id/btnLogoConfig" />
 
+    <!-- Content -->
+
     <ImageButton
         android:id="@+id/btnLogout"
         android:layout_width="67dp"
         android:layout_height="54dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="12dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="16dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/c_logout"
         android:padding="12dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/ic_menu"
+        android:src="@drawable/ic_logout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Content -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -63,14 +65,50 @@
             android:paddingHorizontal="24dp"
             android:paddingBottom="20dp">
 
+            <!-- Banner ARRIBA -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/arriba"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="8dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                android:backgroundTint="#E3F2FD">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="¡Panel de Configuración!"
+                        android:textColor="#1A3A5A"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Administra tus datos personales y seguridad"
+                        android:textColor="#555555"
+                        android:textSize="13sp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
             <!-- Name -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:text="@string/r_nombres"
                 android:textColor="@color/nav_inactive"
-                android:textSize="14sp"
-                android:layout_marginTop="20dp"/>
+                android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/etNombreConfig"
@@ -80,20 +118,20 @@
                 android:background="@drawable/rounded_input"
                 android:hint="@string/r_name_hint"
                 android:inputType="textPersonName"
+                android:padding="16dp"
+                android:text=""
                 android:textColor="@color/black"
                 android:textColorHint="#757575"
-                android:textSize="16sp"
-                android:padding="16dp"
-                android:text="" />
+                android:textSize="16sp" />
 
             <!-- Email -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:text="@string/r_correo"
                 android:textColor="@color/nav_inactive"
-                android:textSize="14sp"
-                android:layout_marginTop="20dp"/>
+                android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/etCorreoConfig"
@@ -103,20 +141,20 @@
                 android:background="@drawable/rounded_input"
                 android:hint="@string/r_email_hint"
                 android:inputType="textEmailAddress"
+                android:padding="16dp"
+                android:text=""
                 android:textColor="@color/black"
                 android:textColorHint="#757575"
-                android:textSize="16sp"
-                android:padding="16dp"
-                android:text="" />
+                android:textSize="16sp" />
 
             <!-- Phone -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:text="@string/r_telefono"
                 android:textColor="@color/nav_inactive"
-                android:textSize="14sp"
-                android:layout_marginTop="20dp"/>
+                android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/etTelefonoConfig"
@@ -126,20 +164,20 @@
                 android:background="@drawable/rounded_input"
                 android:hint="@string/r_phone_hint"
                 android:inputType="phone"
+                android:padding="16dp"
+                android:text=""
                 android:textColor="@color/black"
                 android:textColorHint="#757575"
-                android:textSize="16sp"
-                android:padding="16dp"
-                android:text="" />
+                android:textSize="16sp" />
 
             <!-- Country -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:text="@string/c_country"
                 android:textColor="@color/nav_inactive"
-                android:textSize="14sp"
-                android:layout_marginTop="20dp"/>
+                android:textSize="14sp" />
 
             <Spinner
                 android:id="@+id/spinnerPais"
@@ -152,10 +190,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:text="@string/c_birthday"
                 android:textColor="@color/nav_inactive"
-                android:textSize="14sp"
-                android:layout_marginTop="20dp"/>
+                android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/etFechaNacimientoConfig"
@@ -163,23 +201,23 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/rounded_input"
+                android:clickable="true"
+                android:focusable="false"
                 android:hint="@string/c_date_format_hint"
                 android:inputType="none"
-                android:focusable="false"
-                android:clickable="true"
+                android:padding="16dp"
                 android:textColor="@color/black"
                 android:textColorHint="#757575"
-                android:textSize="16sp"
-                android:padding="16dp" />
+                android:textSize="16sp" />
 
             <!-- Gender -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:text="@string/c_gender"
                 android:textColor="@color/nav_inactive"
-                android:textSize="14sp"
-                android:layout_marginTop="20dp"/>
+                android:textSize="14sp" />
 
             <Spinner
                 android:id="@+id/spinnerGenero"
@@ -192,10 +230,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:text="@string/c_language"
                 android:textColor="@color/nav_inactive"
-                android:textSize="14sp"
-                android:layout_marginTop="20dp"/>
+                android:textSize="14sp" />
 
             <Spinner
                 android:id="@+id/spinnerLenguaje"
@@ -226,8 +264,8 @@
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_gravity="center"
-                    android:visibility="gone"
-                    android:indeterminateTint="@color/white" />
+                    android:indeterminateTint="@color/white"
+                    android:visibility="gone" />
             </FrameLayout>
 
             <Button
@@ -243,6 +281,17 @@
                 android:textStyle="bold"
                 app:cornerRadius="15dp" />
 
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchBiometria"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/rounded_input"
+                android:paddingHorizontal="16dp"
+                android:text="@string/c_biometric_login"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -254,22 +303,22 @@
                     android:id="@+id/tvTerminos"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/c_terms"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
                     android:layout_marginBottom="8dp"
                     android:clickable="true"
-                    android:focusable="true" />
+                    android:focusable="true"
+                    android:text="@string/c_terms"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/tvPrivacidad"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:text="@string/c_privacy"
                     android:textColor="@color/black"
-                    android:textSize="14sp"
-                    android:clickable="true"
-                    android:focusable="true" />
+                    android:textSize="14sp" />
             </LinearLayout>
 
         </LinearLayout>
@@ -281,8 +330,8 @@
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:background="@color/white"
-        android:orientation="horizontal"
         android:elevation="16dp"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
@@ -290,15 +339,17 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
             android:clickable="true"
-            android:focusable="true">
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_home"
-                app:tint="@color/nav_inactive"/>
+                app:tint="@color/nav_inactive" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -312,15 +363,17 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
             android:clickable="true"
-            android:focusable="true">
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_minus_circle"
-                app:tint="@color/nav_active"/>
+                app:tint="@color/nav_active" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -334,15 +387,17 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
             android:clickable="true"
-            android:focusable="true">
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_history"
-                app:tint="@color/nav_inactive"/>
+                app:tint="@color/nav_inactive" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -356,15 +411,17 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
             android:clickable="true"
-            android:focusable="true">
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_pie_chart"
-                app:tint="@color/nav_inactive"/>
+                app:tint="@color/nav_inactive" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

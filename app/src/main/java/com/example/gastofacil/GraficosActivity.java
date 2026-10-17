@@ -45,6 +45,7 @@ public class GraficosActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graficos);
+        ThemeHelper.applyBackground(this, findViewById(android.R.id.content), false);
 
         currencyFormat.setMaximumFractionDigits(2);
         mAuth = FirebaseAuth.getInstance();

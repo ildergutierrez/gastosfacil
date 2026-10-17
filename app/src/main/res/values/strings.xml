@@ -40,11 +40,11 @@
 
     <!-- Dashboard Screen -->
     <string name="d_available_money">Dinero Disponible</string>
-    <string name="d_balance_value">$1,245.50</string>
+    <string name="d_balance_value">$0,0</string>
     <string name="d_incomes_label">Ingresos: </string>
-    <string name="d_incomes_value">+$2,800</string>
+    <string name="d_incomes_value">$0,0</string>
     <string name="d_expenses_label">Gastos: </string>
-    <string name="d_expenses_value">-$1,554</string>
+    <string name="d_expenses_value">$0,0</string>
     <string name="d_register_income">Registrar Ingreso</string>
     <string name="d_register_expense">Registrar Gasto</string>
     <string name="d_register_movement">Registrar Movimiento</string>
@@ -60,15 +60,15 @@
 
     <string name="d_trans_netflix">Suscripción Netflix</string>
     <string name="d_trans_netflix_desc">Ocio · Hoy, 10:15 AM</string>
-    <string name="d_trans_netflix_val">-$14.99</string>
+    <string name="d_trans_netflix_val">$0.0</string>
 
     <string name="d_trans_market">Compra Supermercado</string>
     <string name="d_trans_market_desc">Comida · Hoy, 08:30 AM</string>
-    <string name="d_trans_market_val">-$64.50</string>
+    <string name="d_trans_market_val">$0.0</string>
 
     <string name="d_trans_salary">Sueldo Mensual</string>
     <string name="d_trans_salary_desc">Trabajo · Ayer, 06:00 PM</string>
-    <string name="d_trans_salary_val">+$2,800.00</string>
+    <string name="d_trans_salary_val">$0,0</string>
 
     <!-- Nuevo Gasto Screen -->
     <string name="ng_title">Nuevo Gasto</string>
@@ -92,23 +92,23 @@
     <string name="h_yesterday">AYER</string>
     <string name="h_trans_gas">Carga de Combustible</string>
     <string name="h_trans_gas_desc">Transporte · 08 Dec, 02:15 PM</string>
-    <string name="h_trans_gas_val">-$35.00</string>
+    <string name="h_trans_gas_val">$0.0</string>
     <string name="desc_filter">Filtrar transacciones</string>
 
     <!-- Graficos Screen -->
     <string name="g_title">Análisis</string>
     <string name="g_month_default">Diciembre 2024</string>
     <string name="g_total_spent_label">Total Gastado: </string>
-    <string name="g_total_spent_val">$400.00</string>
+    <string name="g_total_spent_val">$0.0</string>
     <string name="g_breakdown_title">Desglose por Categoría</string>
 
-    <string name="g_val_food">$180.00</string>
+    <string name="g_val_food">$0.0</string>
     <string name="g_pct_food">45%</string>
-    <string name="g_val_transp">$80.00</string>
+    <string name="g_val_transp">$0.0</string>
     <string name="g_pct_transp">20%</string>
-    <string name="g_val_study">$60.00</string>
+    <string name="g_val_study">$0.0</string>
     <string name="g_pct_study">15%</string>
-    <string name="g_val_leisure">$80.00</string>
+    <string name="g_val_leisure">$0.0</string>
     <string name="g_pct_leisure">20%</string>
 
     <string name="desc_prev_month">Mes anterior</string>

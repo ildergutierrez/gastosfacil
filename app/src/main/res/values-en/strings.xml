@@ -64,16 +64,16 @@
 
     <string name="d_trans_market">Grocery Shopping</string>
     <string name="d_trans_market_desc">Food · Today, 08:30 AM</string>
-    <string name="d_trans_market_val">-$64.50</string>
+    <string name="d_trans_market_val">$0.0</string>
 
     <string name="d_trans_salary">Monthly Salary</string>
     <string name="d_trans_salary_desc">Work · Yesterday, 06:00 PM</string>
-    <string name="d_trans_salary_val">+$2,800.00</string>
+    <string name="d_trans_salary_val">$0,0</string>
 
     <!-- Nuevo Gasto Screen -->
     <string name="ng_title">New Expense</string>
     <string name="ng_amount_label">EXPENSE AMOUNT</string>
-    <string name="ng_amount_default">$ 0.00</string>
+    <string name="ng_amount_default">$0.00</string>
     <string name="ng_category_label">Category</string>
     <string name="ng_cat_food">Food</string>
     <string name="ng_cat_transport">Transport</string>
@@ -92,7 +92,7 @@
     <string name="h_yesterday">YESTERDAY</string>
     <string name="h_trans_gas">Fuel Refill</string>
     <string name="h_trans_gas_desc">Transportation · Dec 08, 02:15 PM</string>
-    <string name="h_trans_gas_val">-$35.00</string>
+    <string name="h_trans_gas_val">$0.0</string>
     <string name="desc_filter">Filter transactions</string>
 
     <!-- Graficos Screen -->
@@ -102,14 +102,14 @@
     <string name="g_total_spent_val">$0.00</string>
     <string name="g_breakdown_title">Breakdown by Category</string>
 
-    <string name="g_val_food">$180.00</string>
+    <string name="g_val_food">$0.0</string>
     <string name="g_pct_food">45%</string>
-    <string name="g_val_transp">$80.00</string>
+    <string name="g_val_transp">$0.0</string>
     <string name="g_pct_transp">20%</string>
-    <string name="g_val_study">$60.00</string>
+    <string name="g_val_study">$0.0</string>
     <string name="g_pct_study">15%</string>
     <string name="c_biometric_login">Login with biometrics</string>
-    <string name="g_val_leisure">$80.00</string>
+    <string name="g_val_leisure">$0.0</string>
     <string name="g_pct_leisure">20%</string>
 
     <string name="desc_prev_month">Previous month</string>

@@ -61,6 +61,7 @@ public class HistoriaActivity extends AppCompatActivity implements TransactionAd
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_historia);
+        ThemeHelper.applyBackground(this, findViewById(android.R.id.content), false);
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -243,20 +244,11 @@ public class HistoriaActivity extends AppCompatActivity implements TransactionAd
             llUbicacion.setVisibility(View.VISIBLE);
             tvCoordenadas.setText(String.format(Locale.ENGLISH, "%.6f, %.6f", transaction.getLatitude(), transaction.getLongitude()));
             btnVerMapa.setOnClickListener(v -> {
-                try {
-                    String uri = String.format(Locale.ENGLISH, "geo:%f,%f?q=%f,%f(Ubicación)", 
-                            transaction.getLatitude(), transaction.getLongitude(), 
-                            transaction.getLatitude(), transaction.getLongitude());
-                    Intent intent = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(uri));
-                    intent.setPackage("com.google.android.apps.maps");
-                    startActivity(intent);
-                } catch (Exception e) {
-                    String uri = String.format(Locale.ENGLISH, "geo:%f,%f?q=%f,%f", 
-                            transaction.getLatitude(), transaction.getLongitude(), 
-                            transaction.getLatitude(), transaction.getLongitude());
-                    Intent intent = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(uri));
-                    startActivity(intent);
-                }
+                Intent intent = new Intent(this, LocationPickerActivity.class);
+                intent.putExtra("route_mode", true);
+                intent.putExtra("dest_lat", transaction.getLatitude());
+                intent.putExtra("dest_lng", transaction.getLongitude());
+                startActivity(intent);
             });
         } else {
             llUbicacion.setVisibility(View.GONE);

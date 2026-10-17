@@ -3,9 +3,11 @@ package com.example.gastofacil;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -33,6 +35,7 @@ public class RegistroActivity extends AppCompatActivity {
         DatabaseReference myRef = database.getReference("usuarios");
 
         setContentView(R.layout.activity_registro);
+        ThemeHelper.applyBackground(this, findViewById(android.R.id.content), false);
         
         //obtener los datos de los inputs
         EditText fullName= findViewById(R.id.atfullName);
@@ -40,7 +43,31 @@ public class RegistroActivity extends AppCompatActivity {
         EditText tel = findViewById(R.id.atcell);
         EditText contra = findViewById(R.id.atpassword);
         EditText confirmar = findViewById(R.id.atconfirmar);
+        ImageButton btnShowPassword = findViewById(R.id.btnShowPassword);
+        ImageButton btnShowConfirmPassword = findViewById(R.id.btnShowConfirmPassword);
         androidx.appcompat.widget.AppCompatButton btnRegistrarse = findViewById(R.id.btnRegistrarse);
+
+        btnShowPassword.setOnClickListener(v -> {
+            if (contra.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
+                contra.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                btnShowPassword.setImageResource(R.drawable.ic_eye_off);
+            } else {
+                contra.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                btnShowPassword.setImageResource(R.drawable.ic_eye);
+            }
+            contra.setSelection(contra.getText().length());
+        });
+
+        btnShowConfirmPassword.setOnClickListener(v -> {
+            if (confirmar.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
+                confirmar.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                btnShowConfirmPassword.setImageResource(R.drawable.ic_eye_off);
+            } else {
+                confirmar.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                btnShowConfirmPassword.setImageResource(R.drawable.ic_eye);
+            }
+            confirmar.setSelection(confirmar.getText().length());
+        });
 
         // Feedback views
         TextView tvReqLength = findViewById(R.id.tvReqLength);

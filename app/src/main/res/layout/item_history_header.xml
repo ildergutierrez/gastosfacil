@@ -9,6 +9,6 @@
     android:layout_marginBottom="4dp"
     android:textSize="15sp"
     android:textStyle="bold"
-    android:textColor="#1A3A5A"
+    android:textColor="@color/black"
     android:background="@drawable/rounded_input"
     android:textAllCaps="true"/>

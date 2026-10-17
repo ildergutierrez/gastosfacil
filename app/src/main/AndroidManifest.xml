@@ -27,17 +27,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GastoFacil" >
         <activity
-            android:name=".inicioSesion"
+            android:name=".SplashActivity"
             android:exported="true"
-            android:label="@string/app_name_display"
-            android:theme="@style/Theme.GastoFacil"
-            android:windowSoftInputMode="adjustResize" >
+            android:theme="@style/Theme.GastoFacil" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".inicioSesion"
+            android:exported="false"
+            android:label="@string/app_name_display"
+            android:theme="@style/Theme.GastoFacil"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".RegistroActivity"
             android:exported="false"

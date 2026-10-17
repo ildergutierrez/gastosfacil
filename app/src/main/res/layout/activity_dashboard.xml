@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:background="@drawable/fondo_2"
     tools:context=".DashboardActivity">
 
@@ -13,27 +14,13 @@
         android:layout_width="75dp"
         android:layout_height="75dp"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="36dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:scaleType="fitCenter"
         android:src="@drawable/icono"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:contentDescription="@string/logo" />
-
-    <ImageButton
-        android:id="@+id/btnNotifications"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/circle_button_bg"
-        android:elevation="4dp"
-        android:padding="12dp"
-        android:src="@drawable/ic_notifications"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/desc_notifications" />
 
     <!-- Content -->
     <ScrollView

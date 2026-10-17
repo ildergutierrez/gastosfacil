@@ -48,7 +48,7 @@ import java.util.Locale;
 public class MovimientosActivity extends AppCompatActivity {
 
     private TextView tvToggleIngreso, tvToggleEgreso;
-    private TextView tvAmountLabel, tvDateDisplay, tvAvailableBalanceM;
+    private TextView tvAmountLabel, tvDateDisplay, tvAvailableBalanceM, tvInsufficientBalanceError;
     private EditText etAmount, etNote;
     private TextView tvCatComida, tvCatTransporte, tvCatEstudio, tvCatOtro;
     private RelativeLayout rlDatePicker;
@@ -118,6 +118,7 @@ public class MovimientosActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movimientos);
+        ThemeHelper.applyBackground(this, findViewById(android.R.id.content), false);
 
         // Firebase
         mAuth = FirebaseAuth.getInstance();
@@ -141,6 +142,7 @@ public class MovimientosActivity extends AppCompatActivity {
         rlDatePicker = findViewById(R.id.rlDatePicker);
         llPhotoLocationContainer = findViewById(R.id.llPhotoLocationContainer);
         btnConfirm = findViewById(R.id.btnConfirm);
+        tvInsufficientBalanceError = findViewById(R.id.tvInsufficientBalanceError);
         ivCapturedPhoto = findViewById(R.id.ivCapturedPhoto);
         ivMapIcon = findViewById(R.id.ivMapIcon);
         
@@ -175,19 +177,8 @@ public class MovimientosActivity extends AppCompatActivity {
             updateToggleUI();
         });
 
-        // Amount Logic: Only numbers, color managed by toggle
-        etAmount.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                // We handle only the number here, no prefix in the EditText itself
-            }
-        });
+        // Amount Logic: Realtime formatting and validation
+        etAmount.addTextChangedListener(new CurrencyTextWatcher(etAmount, this::validarMontoYBoton));
 
         // Category Listeners
         View.OnClickListener categoryListener = v -> selectCategory((TextView) v);
@@ -246,16 +237,17 @@ public class MovimientosActivity extends AppCompatActivity {
 
     private void registrarEgreso() {
         String montoStr = etAmount.getText().toString().trim();
+        String cleanMonto = montoStr.replaceAll("[^\\d]", "");
         String nota = etNote.getText().toString().trim();
         String fecha = tvDateDisplay.getText().toString();
 
         // Validaciones
-        if (montoStr.isEmpty()) {
+        if (cleanMonto.isEmpty()) {
             Toast.makeText(this, getString(R.string.m_enter_amount), Toast.LENGTH_SHORT).show();
             return;
         }
 
-        double monto = Double.parseDouble(montoStr);
+        double monto = Double.parseDouble(cleanMonto);
         if (monto > saldoActual) {
             Toast.makeText(this, String.format(getString(R.string.m_insufficient_funds), CurrencyUtils.formatShort(saldoActual)), Toast.LENGTH_LONG).show();
             return;
@@ -312,16 +304,17 @@ public class MovimientosActivity extends AppCompatActivity {
 
     private void registrarMovimiento() {
         String montoStr = etAmount.getText().toString().trim();
+        String cleanMonto = montoStr.replaceAll("[^\\d]", "");
         String nota = etNote.getText().toString().trim();
         String fecha = tvDateDisplay.getText().toString();
         
         // Validaciones
-        if (montoStr.isEmpty()) {
+        if (cleanMonto.isEmpty()) {
             Toast.makeText(this, getString(R.string.m_enter_amount), Toast.LENGTH_SHORT).show();
             return;
         }
         
-        double monto = Double.parseDouble(montoStr);
+        double monto = Double.parseDouble(cleanMonto);
 
         if (selectedCategory.isEmpty()) {
             Toast.makeText(this, getString(R.string.m_select_category), Toast.LENGTH_SHORT).show();
@@ -417,17 +410,11 @@ public class MovimientosActivity extends AppCompatActivity {
             if (location != null) {
                 selectedLat = location.getLatitude();
                 selectedLng = location.getLongitude();
-                String address = getAddressFromCoordinates(this, selectedLat, selectedLng);
-                Toast.makeText(this, "Dirección real: " + address, Toast.LENGTH_LONG).show();
             } else {
                 fusedLocationClient.getLastLocation().addOnSuccessListener(this, lastLoc -> {
                     if (lastLoc != null) {
                         selectedLat = lastLoc.getLatitude();
                         selectedLng = lastLoc.getLongitude();
-                        String address = getAddressFromCoordinates(this, selectedLat, selectedLng);
-                        Toast.makeText(this, "Dirección (última conocida): " + address, Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(this, "No se pudo obtener el GPS. Toca el mapa para seleccionar.", Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -458,47 +445,78 @@ public class MovimientosActivity extends AppCompatActivity {
             tvToggleIngreso.setBackgroundResource(R.drawable.toggle_item_active);
             tvToggleIngreso.setTextColor(Color.WHITE);
             tvToggleEgreso.setBackgroundResource(android.R.color.transparent);
-            tvToggleEgreso.setTextColor(Color.parseColor("#78909C"));
+            tvToggleEgreso.setTextColor(ContextCompat.getColor(this, R.color.text_hint));
             
             tvAmountLabel.setText(R.string.ni_amount_label);
-            etAmount.setTextColor(Color.parseColor("#263238"));
+            etAmount.setTextColor(ContextCompat.getColor(this, R.color.black));
             btnConfirm.setText(R.string.ni_confirm_button);
-            btnConfirm.setBackgroundTintList(ContextCompat.getColorStateList(this, android.R.color.transparent));
-            btnConfirm.setBackgroundResource(R.drawable.confirm_button_bg);
-            btnConfirm.setBackgroundTintList(null); // Use drawable color
+            btnConfirm.setTextColor(Color.WHITE);
+            btnConfirm.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.nav_active));
         } else {
             tvToggleEgreso.setBackgroundResource(R.drawable.toggle_item_active);
             tvToggleEgreso.setTextColor(Color.WHITE);
             tvToggleIngreso.setBackgroundResource(android.R.color.transparent);
-            tvToggleIngreso.setTextColor(Color.parseColor("#78909C"));
+            tvToggleIngreso.setTextColor(ContextCompat.getColor(this, R.color.text_hint));
 
             tvAmountLabel.setText(R.string.ng_amount_label);
             etAmount.setTextColor(Color.RED);
             btnConfirm.setText(R.string.ng_confirm_button);
-            // For egreso, we might want a red button, but the image shows green for "Confirmar Ingreso".
-            // If the user is in "Egreso", it should probably be red or the same theme.
-            // I'll use red for Egreso to be clear.
+            btnConfirm.setTextColor(Color.WHITE);
             btnConfirm.setBackgroundTintList(ContextCompat.getColorStateList(this, android.R.color.holo_red_dark));
         }
+        validarMontoYBoton();
     }
 
     private void selectCategory(TextView selected) {
-        // Resetear todos los chips
-        tvCatComida.setBackgroundResource(R.drawable.category_chip_bg);
-        tvCatComida.setTextColor(Color.BLACK);
-        tvCatTransporte.setBackgroundResource(R.drawable.category_chip_bg);
-        tvCatTransporte.setTextColor(Color.BLACK);
-        tvCatEstudio.setBackgroundResource(R.drawable.category_chip_bg);
-        tvCatEstudio.setTextColor(Color.BLACK);
-        tvCatOtro.setBackgroundResource(R.drawable.category_chip_bg);
-        tvCatOtro.setTextColor(Color.BLACK);
+        int unselectedTextColor = ContextCompat.getColor(this, R.color.black);
 
-        // Seleccionar el actual
+        tvCatComida.setBackgroundResource(R.drawable.category_chip_bg);
+        tvCatComida.setTextColor(unselectedTextColor);
+        tvCatTransporte.setBackgroundResource(R.drawable.category_chip_bg);
+        tvCatTransporte.setTextColor(unselectedTextColor);
+        tvCatEstudio.setBackgroundResource(R.drawable.category_chip_bg);
+        tvCatEstudio.setTextColor(unselectedTextColor);
+        tvCatOtro.setBackgroundResource(R.drawable.category_chip_bg);
+        tvCatOtro.setTextColor(unselectedTextColor);
+
         selected.setBackgroundResource(R.drawable.category_chip_selected_bg);
         selected.setTextColor(ContextCompat.getColor(this, R.color.nav_active));
         
-        // Guardar la categoría seleccionada
         selectedCategory = selected.getText().toString();
+    }
+
+    private void validarMontoYBoton() {
+        double currentMonto = 0;
+        try {
+            String str = etAmount.getText().toString().trim();
+            if (!str.isEmpty()) {
+                String clean = str.replaceAll("[^\\d]", "");
+                if (!clean.isEmpty()) {
+                    currentMonto = Double.parseDouble(clean);
+                }
+            }
+        } catch (Exception ignored) {}
+
+        if (currentMonto <= 0) {
+            btnConfirm.setEnabled(false);
+            btnConfirm.setAlpha(0.5f);
+            if (tvInsufficientBalanceError != null) {
+                tvInsufficientBalanceError.setVisibility(View.GONE);
+            }
+        } else if (!isIngreso && currentMonto > saldoActual) {
+            btnConfirm.setEnabled(false);
+            btnConfirm.setAlpha(0.5f);
+            if (tvInsufficientBalanceError != null) {
+                tvInsufficientBalanceError.setVisibility(View.VISIBLE);
+                tvInsufficientBalanceError.setText("El monto ingresado es mayor al dinero disponible");
+            }
+        } else {
+            btnConfirm.setEnabled(true);
+            btnConfirm.setAlpha(1.0f);
+            if (tvInsufficientBalanceError != null) {
+                tvInsufficientBalanceError.setVisibility(View.GONE);
+            }
+        }
     }
 
     private void showDatePicker() {
@@ -530,6 +548,7 @@ public class MovimientosActivity extends AppCompatActivity {
                 if (task.isSuccessful() && task.getResult().getValue() != null) {
                     saldoActual = Double.parseDouble(task.getResult().getValue().toString());
                     tvAvailableBalanceM.setText(String.format(getString(R.string.m_available_balance), CurrencyUtils.formatBalance(saldoActual)));
+                    validarMontoYBoton();
                 }
             });
         }

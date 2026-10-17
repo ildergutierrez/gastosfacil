@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:background="@drawable/fondo_2"
     tools:context=".ConfiguracionActivity">
 
@@ -14,7 +15,7 @@
         android:layout_width="93dp"
         android:layout_height="95dp"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="36dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/logo"
         android:scaleType="fitCenter"
@@ -74,7 +75,7 @@
                 android:layout_marginBottom="8dp"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="4dp"
-                android:backgroundTint="#E3F2FD">
+                app:cardBackgroundColor="@color/card_bg">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -87,7 +88,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="¡Panel de Configuración!"
-                        android:textColor="#1A3A5A"
+                        android:textColor="@color/black"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
@@ -96,7 +97,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:text="Administra tus datos personales y seguridad"
-                        android:textColor="#555555"
+                        android:textColor="@color/text_hint"
                         android:textSize="13sp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>

@@ -1,170 +1,191 @@
 package com.example.gastofacil;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
+import android.webkit.JavascriptInterface;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import org.maplibre.android.MapLibre;
-import org.maplibre.android.camera.CameraPosition;
-import org.maplibre.android.geometry.LatLng;
-import org.maplibre.android.maps.MapView;
-import org.maplibre.android.maps.MapLibreMap;
-import org.maplibre.android.maps.OnMapReadyCallback;
-import org.maplibre.android.maps.Style;
-import org.maplibre.android.location.LocationComponent;
-import org.maplibre.android.location.LocationComponentActivationOptions;
-import org.maplibre.android.location.modes.CameraMode;
-import org.maplibre.android.location.modes.RenderMode;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 
-import java.util.List;
-import java.util.Locale;
-
-public class LocationPickerActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class LocationPickerActivity extends AppCompatActivity {
 
     private static final int REQ_LOCATION = 100;
+    private WebView webViewMap;
+    private double currentLat = 4.6097; // Default Bogotá
+    private double currentLng = -74.0817;
+    private double selectedLat = 4.6097;
+    private double selectedLng = -74.0817;
+    private boolean routeMode = false;
+    private double destLat = 0.0;
+    private double destLng = 0.0;
 
-    private MapView mapView;
-    private MapLibreMap maplibreMap;
-
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Inicializar MapLibre antes de setContentView
-        MapLibre.getInstance(this);
-
         setContentView(R.layout.activity_location_picker);
 
-        mapView = findViewById(R.id.mapView);
-        mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(this);
+        routeMode = getIntent().getBooleanExtra("route_mode", false);
+        destLat = getIntent().getDoubleExtra("dest_lat", 0.0);
+        destLng = getIntent().getDoubleExtra("dest_lng", 0.0);
 
+        webViewMap = findViewById(R.id.id_mapa);
         Button btnConfirm = findViewById(R.id.btnConfirmLocation);
-        btnConfirm.setOnClickListener(v -> {
-            if (maplibreMap != null) {
-                LatLng center = maplibreMap.getCameraPosition().target;
-                double selectedLat = center.getLatitude();
-                double selectedLng = center.getLongitude();
 
-                Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-                try {
-                    List<Address> addresses = geocoder.getFromLocation(selectedLat, selectedLng, 1);
-                    if (addresses != null && !addresses.isEmpty()) {
-                        String address = addresses.get(0).getAddressLine(0);
-                        Toast.makeText(this, "Dirección: " + address, Toast.LENGTH_LONG).show();
-                    }
-                } catch (Exception e) {
-                    // ignore
-                }
-
+        if (routeMode) {
+            btnConfirm.setText("Cerrar Ruta");
+            btnConfirm.setOnClickListener(v -> finish());
+        } else {
+            btnConfirm.setOnClickListener(v -> {
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("lat", selectedLat);
                 resultIntent.putExtra("lng", selectedLng);
                 setResult(RESULT_OK, resultIntent);
                 finish();
-            }
-        });
-    }
+            });
+        }
 
-    @Override
-    public void onMapReady(@NonNull MapLibreMap map) {
-        this.maplibreMap = map;
+        WebSettings webSettings = webViewMap.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setDomStorageEnabled(true);
+        webSettings.setLoadWithOverviewMode(true);
+        webSettings.setUseWideViewPort(true);
 
-        // Posición inicial: Bogotá o la última recibida
-        double lat = getIntent().getDoubleExtra("lat", 4.6097);
-        double lng = getIntent().getDoubleExtra("lng", -74.0817);
-
-        map.setCameraPosition(new CameraPosition.Builder()
-                .target(new LatLng(lat, lng))
-                .zoom(15.0)
-                .build());
-
-        // Cargar estilo vectorial de MapTiler con la API Key
-        String mapKey = BuildConfig.MAPTILER_KEY;
-        String styleUrl = "https://api.maptiler.com/maps/streets-v2/style.json?key=" + mapKey;
-
-        map.setStyle(styleUrl, new Style.OnStyleLoaded() {
+        webViewMap.addJavascriptInterface(new WebAppInterface(), "AndroidBridge");
+        webViewMap.setWebViewClient(new WebViewClient() {
             @Override
-            public void onStyleLoaded(@NonNull Style style) {
-                enableLocationComponent(style);
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                loadMapLeaflet();
             }
         });
+
+        webViewMap.loadDataWithBaseURL("https://example.com", getLeafletHtml(), "text/html", "UTF-8", null);
+
+        obtainUserLocation();
     }
 
-    private void enableLocationComponent(@NonNull Style loadedMapStyle) {
+    private void obtainUserLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            LocationComponent locationComponent = maplibreMap.getLocationComponent();
-            locationComponent.activateLocationComponent(
-                    LocationComponentActivationOptions.builder(this, loadedMapStyle).build()
-            );
-            locationComponent.setLocationComponentEnabled(true);
-            locationComponent.setCameraMode(CameraMode.TRACKING);
-            locationComponent.setRenderMode(RenderMode.COMPASS);
+            FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+            fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
+                if (location != null) {
+                    currentLat = location.getLatitude();
+                    currentLng = location.getLongitude();
+                    if (!routeMode) {
+                        selectedLat = currentLat;
+                        selectedLng = currentLng;
+                    }
+                    loadMapLeaflet();
+                }
+            });
         } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQ_LOCATION);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQ_LOCATION);
+        }
+    }
+
+    private void loadMapLeaflet() {
+        double lat = routeMode ? currentLat : selectedLat;
+        double lng = routeMode ? currentLng : selectedLng;
+        
+        String jsCall;
+        if (routeMode) {
+            jsCall = String.format(java.util.Locale.ENGLISH, "updateRouteMap(%f, %f, %f, %f);", currentLat, currentLng, destLat, destLng);
+        } else {
+            jsCall = String.format(java.util.Locale.ENGLISH, "updateMapCenter(%f, %f);", lat, lng);
+        }
+        webViewMap.evaluateJavascript("javascript:" + jsCall, null);
+    }
+
+    private String getLeafletHtml() {
+        return "<!DOCTYPE html>\n" +
+                "<html>\n" +
+                "<head>\n" +
+                "    <meta charset=\"utf-8\" />\n" +
+                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                "    <link rel=\"stylesheet\" href=\"https://unpkg.com/leaflet@1.9.4/dist/leaflet.css\" />\n" +
+                "    <script src=\"https://unpkg.com/leaflet@1.9.4/dist/leaflet.js\"></script>\n" +
+                "    <style>\n" +
+                "        html, body, #map { width: 100%; height: 100%; margin: 0; padding: 0; }\n" +
+                "        .center-marker {\n" +
+                "            position: absolute;\n" +
+                "            top: 50%; left: 50%;\n" +
+                "            transform: translate(-50%, -100%);\n" +
+                "            width: 40px; height: 40px;\n" +
+                "            background-image: url('https://cdn-icons-png.flaticon.com/512/684/684908.png');\n" +
+                "            background-size: cover;\n" +
+                "            z-index: 1000;\n" +
+                "            pointer-events: none;\n" +
+                "        }\n" +
+                "    </style>\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "    <div id=\"map\"></div>\n" +
+                "    <div class=\"center-marker\" id=\"markerCenter\"></div>\n" +
+                "    <script>\n" +
+                "        var map = L.map('map').setView([4.6097, -74.0817], 15);\n" +
+                "        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {\n" +
+                "            maxZoom: 19,\n" +
+                "            attribution: '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors'\n" +
+                "        }).addTo(map);\n" +
+                "\n" +
+                "        var routeLine = null;\n" +
+                "        var destMarker = null;\n" +
+                "\n" +
+                "        map.on('move', function() {\n" +
+                "            var center = map.getCenter();\n" +
+                "            if (window.AndroidBridge && !window.isRouteMode) {\n" +
+                "                AndroidBridge.onLocationChanged(center.lat, center.lng);\n" +
+                "            }\n" +
+                "        });\n" +
+                "\n" +
+                "        function updateMapCenter(lat, lng) {\n" +
+                "            map.setView([lat, lng], 15);\n" +
+                "        }\n" +
+                "\n" +
+                "        function updateRouteMap(origLat, origLng, dLat, dLng) {\n" +
+                "            window.isRouteMode = true;\n" +
+                "            document.getElementById('markerCenter').style.display = 'none';\n" +
+                "            map.setView([origLat, origLng], 14);\n" +
+                "            L.marker([origLat, origLng]).addTo(map).bindPopup('Tu ubicación').openPopup();\n" +
+                "            destMarker = L.marker([dLat, dLng]).addTo(map).bindPopup('Destino');\n" +
+                "            \n" +
+                "            var latlngs = [\n" +
+                "                [origLat, origLng],\n" +
+                "                [dLat, dLng]\n" +
+                "            ];\n" +
+                "            routeLine = L.polyline(latlngs, {color: 'blue', weight: 5}).addTo(map);\n" +
+                "            map.fitBounds(routeLine.getBounds(), {padding: [50, 50]});\n" +
+                "        }\n" +
+                "    </script>\n" +
+                "</body>\n" +
+                "</html>";
+    }
+
+    public class WebAppInterface {
+        @JavascriptInterface
+        public void onLocationChanged(double lat, double lng) {
+            selectedLat = lat;
+            selectedLng = lng;
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQ_LOCATION && grantResults.length > 0
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            if (maplibreMap != null) {
-                maplibreMap.getStyle(this::enableLocationComponent);
-            }
+        if (requestCode == REQ_LOCATION && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            obtainUserLocation();
         }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mapView.onStart();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mapView.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mapView.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        mapView.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mapView.onDestroy();
-    }
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mapView.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mapView.onLowMemory();
     }
 }

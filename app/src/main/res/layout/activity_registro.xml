@@ -129,17 +129,34 @@
                 android:textColor="@color/black"
                 android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/atpassword"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/rounded_input"
-                android:hint="@string/r_password_hint"
-                android:inputType="textPassword"
-                android:paddingHorizontal="15dp"
-                android:textColor="@color/black"
-                android:textColorHint="#757575" />
+                android:layout_marginTop="5dp">
+
+                <EditText
+                    android:id="@+id/atpassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/rounded_input"
+                    android:hint="@string/r_password_hint"
+                    android:inputType="textPassword"
+                    android:paddingHorizontal="15dp"
+                    android:paddingEnd="50dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="#757575" />
+
+                <ImageButton
+                    android:id="@+id/btnShowPassword"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="10dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Mostrar contraseña"
+                    android:src="@drawable/ic_eye" />
+            </RelativeLayout>
 
             <!-- Feedback de Contraseña -->
             <LinearLayout
@@ -204,17 +221,34 @@
                 android:textColor="@color/black"
                 android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/atconfirmar"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/rounded_input"
-                android:hint="@string/r_password_hint"
-                android:inputType="textPassword"
-                android:paddingHorizontal="15dp"
-                android:textColor="@color/black"
-                android:textColorHint="#757575" />
+                android:layout_marginTop="5dp">
+
+                <EditText
+                    android:id="@+id/atconfirmar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/rounded_input"
+                    android:hint="@string/r_password_hint"
+                    android:inputType="textPassword"
+                    android:paddingHorizontal="15dp"
+                    android:paddingEnd="50dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="#757575" />
+
+                <ImageButton
+                    android:id="@+id/btnShowConfirmPassword"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="10dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Mostrar confirmar contraseña"
+                    android:src="@drawable/ic_eye" />
+            </RelativeLayout>
 
             <FrameLayout
                 android:layout_width="match_parent"

@@ -46,6 +46,7 @@ public class DashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+        ThemeHelper.applyBackground(this, findViewById(android.R.id.content), false);
 
         currencyFormat.setMaximumFractionDigits(2);
 

@@ -40,6 +40,7 @@ public class inicioSesion extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         setContentView(R.layout.activity_inicio_sesion);
+        ThemeHelper.applyBackground(this, findViewById(android.R.id.content), true);
 
         EditText etUser = findViewById(R.id.etUser);
         EditText etPassword = findViewById(R.id.etPassword);

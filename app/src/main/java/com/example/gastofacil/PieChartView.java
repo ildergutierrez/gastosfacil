@@ -60,8 +60,12 @@ public class PieChartView extends View {
             startAngle += sweepAngle;
         }
         
-        // Efecto Donut (opcional, dibuja un círculo blanco en el centro)
-        paint.setColor(Color.WHITE);
+        // Efecto Donut (el centro se adapta al tema Claro u Oscuro)
+        if (ThemeHelper.isDarkMode(getContext())) {
+            paint.setColor(Color.parseColor("#2A2A2A"));
+        } else {
+            paint.setColor(Color.WHITE);
+        }
         canvas.drawCircle(getWidth() / 2f, getHeight() / 2f, getWidth() / 4f, paint);
     }
 }

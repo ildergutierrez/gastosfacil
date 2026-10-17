@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:background="@drawable/fondo_2"
     tools:context=".MovimientosActivity">
 
@@ -13,7 +14,7 @@
         android:layout_width="75dp"
         android:layout_height="75dp"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="36dp"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
         android:src="@drawable/icono"
@@ -26,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/m_title"
-        android:textColor="#263238"
+        android:textColor="@color/black"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/btnLogoM"
@@ -82,7 +83,7 @@
                     android:background="@android:color/transparent"
                     android:gravity="center"
                     android:text="@string/m_egreso"
-                    android:textColor="#78909C"
+                    android:textColor="@color/text_hint"
                     android:textSize="14sp"
                     android:clickable="true"
                     android:focusable="true"/>
@@ -105,7 +106,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="@string/m_available_balance"
-                android:textColor="#78909C"
+                android:textColor="@color/text_hint"
                 android:textSize="12sp"
                 android:textStyle="italic" />
 
@@ -120,7 +121,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/m_money"
-                    android:textColor="#263238"
+                    android:textColor="@color/black"
                     android:textSize="64sp"
                     android:fontFamily="sans-serif-light" />
 
@@ -132,12 +133,23 @@
                     android:gravity="center"
                     android:hint="0.00"
                     android:inputType="numberDecimal"
-                    android:textColor="#263238"
+                    android:textColor="@color/black"
                     android:textSize="64sp"
                     android:fontFamily="sans-serif-light"
                     android:minWidth="100dp"
                     android:autofillHints="none" />
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvInsufficientBalanceError"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="Saldo insuficiente"
+                android:textColor="#FF5252"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <!-- Category Section -->
             <TextView
@@ -145,7 +157,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
                 android:text="@string/ng_category_label"
-                android:textColor="#78909C"
+                android:textColor="@color/text_hint"
                 android:textSize="14sp" />
 
             <HorizontalScrollView
@@ -183,7 +195,7 @@
                         android:paddingHorizontal="22dp"
                         android:paddingVertical="10dp"
                         android:text="@string/ng_cat_transport"
-                        android:textColor="#263238"
+                        android:textColor="@color/black"
                         android:clickable="true"
                         android:focusable="true" />
 
@@ -197,7 +209,7 @@
                         android:paddingHorizontal="22dp"
                         android:paddingVertical="10dp"
                         android:text="@string/ng_cat_study"
-                        android:textColor="#263238"
+                        android:textColor="@color/black"
                         android:clickable="true"
                         android:focusable="true" />
 
@@ -211,7 +223,7 @@
                         android:paddingHorizontal="22dp"
                         android:paddingVertical="10dp"
                         android:text="@string/m_cat_otro"
-                        android:textColor="#263238"
+                        android:textColor="@color/black"
                         android:clickable="true"
                         android:focusable="true" />
                 </LinearLayout>
@@ -223,7 +235,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="@string/ng_date_label"
-                android:textColor="#78909C"
+                android:textColor="@color/text_hint"
                 android:textSize="14sp" />
 
             <RelativeLayout
@@ -242,7 +254,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:text="@string/ng_date_default"
-                    android:textColor="#263238"
+                    android:textColor="@color/black"
                     android:textSize="16sp" />
 
                 <ImageView
@@ -261,7 +273,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="@string/ng_note_label"
-                android:textColor="#78909C"
+                android:textColor="@color/text_hint"
                 android:textSize="14sp" />
 
             <EditText
@@ -294,7 +306,7 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:src="@drawable/ic_camera"
-                    app:tint="#000000"
+                    app:tint="@color/black"
                     android:clickable="true"
                     android:focusable="true"
                     android:background="?attr/selectableItemBackgroundBorderless"
@@ -325,7 +337,7 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:src="@drawable/ic_map"
-                    app:tint="#000000"
+                    app:tint="@color/black"
                     android:clickable="true"
                     android:focusable="true"
                     android:background="?attr/selectableItemBackgroundBorderless"

@@ -50,7 +50,7 @@ public class HistoriaActivity extends AppCompatActivity implements TransactionAd
     private Map<String, TransactionModel> mapTransactions = new HashMap<>();
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
-    private int displayedCount = 10;
+    private int displayedCount = 15;
 
     @Override
     protected void attachBaseContext(android.content.Context newBase) {
@@ -73,7 +73,7 @@ public class HistoriaActivity extends AppCompatActivity implements TransactionAd
 
         btnVerMas = findViewById(R.id.btnVerMas);
         btnVerMas.setOnClickListener(v -> {
-            displayedCount += 20;
+            displayedCount += 15;
             actualizarUI();
         });
 
@@ -124,7 +124,19 @@ public class HistoriaActivity extends AppCompatActivity implements TransactionAd
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     G_Ingresos ing = ds.getValue(G_Ingresos.class);
                     if (ing != null) {
-                        mapTransactions.put(ing.getId(), new TransactionModel(ing.getId(), ing.getMonto(), ing.getCategoria(), ing.getFecha(), ing.getDescripcion(), "INGRESO", ing.getImagenBase64(), ing.getTimestamp(), ing.getLatitude(), ing.getLongitude()));
+                        String key = ds.getKey();
+                        mapTransactions.put("ingreso_" + key, new TransactionModel(
+                            key,
+                            ing.getMonto(),
+                            ing.getCategoria(),
+                            ing.getFecha(),
+                            ing.getDescripcion(),
+                            "INGRESO",
+                            ing.getImagenBase64(),
+                            ing.getTimestamp(),
+                            ing.getLatitude(),
+                            ing.getLongitude()
+                        ));
                     }
                 }
                 actualizarUI();
@@ -141,7 +153,19 @@ public class HistoriaActivity extends AppCompatActivity implements TransactionAd
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     G_Egresos egr = ds.getValue(G_Egresos.class);
                     if (egr != null) {
-                        mapTransactions.put(egr.getId(), new TransactionModel(egr.getId(), egr.getMonto(), egr.getCategoria(), egr.getFecha(), egr.getDescripcion(), "EGRESO", egr.getImagenBase64(), egr.getTimestamp(), egr.getLatitude(), egr.getLongitude()));
+                        String key = ds.getKey();
+                        mapTransactions.put("egreso_" + key, new TransactionModel(
+                            key,
+                            egr.getMonto(),
+                            egr.getCategoria(),
+                            egr.getFecha(),
+                            egr.getDescripcion(),
+                            "EGRESO",
+                            egr.getImagenBase64(),
+                            egr.getTimestamp(),
+                            egr.getLatitude(),
+                            egr.getLongitude()
+                        ));
                     }
                 }
                 actualizarUI();
@@ -152,12 +176,45 @@ public class HistoriaActivity extends AppCompatActivity implements TransactionAd
         });
     }
 
+    private long parseDateToMillis(String fechaStr) {
+        if (fechaStr == null || fechaStr.isEmpty()) return 0L;
+        String clean = fechaStr.replace("Hoy, ", "").trim();
+        try {
+            String[] parts = clean.split("/");
+            if (parts.length == 3) {
+                String day = parts[0].length() == 1 ? "0" + parts[0] : parts[0];
+                String month = parts[1].length() == 1 ? "0" + parts[1] : parts[1];
+                String year = parts[2].length() == 2 ? "20" + parts[2] : parts[2];
+                clean = day + "/" + month + "/" + year;
+            }
+        } catch (Exception ignored) {}
+
+        SimpleDateFormat[] formats = {
+            new SimpleDateFormat("dd/MM/yyyy", new Locale("es", "ES")),
+            new SimpleDateFormat("d/M/yyyy", new Locale("es", "ES")),
+            new SimpleDateFormat("dd/MM/yy", new Locale("es", "ES")),
+            new SimpleDateFormat("yyyy-MM-dd", new Locale("es", "ES"))
+        };
+        for (SimpleDateFormat sdf : formats) {
+            try {
+                sdf.setLenient(true);
+                Date d = sdf.parse(clean);
+                if (d != null) return d.getTime();
+            } catch (Exception ignored) {}
+        }
+        return 0L;
+    }
+
     private void actualizarUI() {
         listFull.clear();
         listFull.addAll(mapTransactions.values());
         
-        // Ordenar por timestamp (los más recientes primero)
-        Collections.sort(listFull, (t1, t2) -> Long.compare(t2.getTimestamp(), t1.getTimestamp()));
+        // Ordenar estrictamente por fecha (los más recientes primero)
+        Collections.sort(listFull, (t1, t2) -> {
+            long d2 = parseDateToMillis(t2.getFecha());
+            long d1 = parseDateToMillis(t1.getFecha());
+            return Long.compare(d2, d1);
+        });
         
         historyItems.clear();
         SimpleDateFormat sdfMonthYear = new SimpleDateFormat("MMMM yyyy", new Locale("es", "ES"));
@@ -167,8 +224,9 @@ public class HistoriaActivity extends AppCompatActivity implements TransactionAd
         for (int i = 0; i < end; i++) {
             TransactionModel t = listFull.get(i);
             String monthYear = "";
-            if (t.getTimestamp() > 0) {
-                monthYear = sdfMonthYear.format(new Date(t.getTimestamp()));
+            long millis = parseDateToMillis(t.getFecha());
+            if (millis > 0) {
+                monthYear = sdfMonthYear.format(new Date(millis));
                 if (!monthYear.isEmpty()) {
                     monthYear = monthYear.substring(0, 1).toUpperCase() + monthYear.substring(1);
                 }

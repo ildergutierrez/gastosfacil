@@ -45,7 +45,37 @@ public class TransactionModel {
     public String getDescripcion() { return descripcion; }
     public String getTipo() { return tipo; }
     public String getImagenBase64() { return imagenBase64; }
-    public long getTimestamp() { return timestamp; }
+    public long getTimestamp() {
+        if (fecha != null && !fecha.isEmpty()) {
+            try {
+                String clean = fecha.replace("Hoy, ", "").trim();
+                String[] parts = clean.split("/");
+                if (parts.length == 3) {
+                    String day = parts[0];
+                    String month = parts[1];
+                    String year = parts[2];
+                    if (year.length() == 2) {
+                        year = "20" + year;
+                    }
+                    clean = day + "/" + month + "/" + year;
+                }
+                java.text.SimpleDateFormat[] formats = {
+                    new java.text.SimpleDateFormat("dd/MM/yyyy", new java.util.Locale("es", "ES")),
+                    new java.text.SimpleDateFormat("d/M/yyyy", new java.util.Locale("es", "ES")),
+                    new java.text.SimpleDateFormat("dd/MM/yy", new java.util.Locale("es", "ES")),
+                    new java.text.SimpleDateFormat("yyyy-MM-dd", new java.util.Locale("es", "ES"))
+                };
+                for (java.text.SimpleDateFormat sdf : formats) {
+                    try {
+                        sdf.setLenient(true);
+                        java.util.Date date = sdf.parse(clean);
+                        if (date != null) return date.getTime();
+                    } catch (Exception ignored) {}
+                }
+            } catch (Exception ignored) {}
+        }
+        return timestamp;
+    }
 
     public Double getLatitude() { return latitude; }
     public Double getLongitude() { return longitude; }

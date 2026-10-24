@@ -50,7 +50,9 @@ public class MovimientosActivity extends AppCompatActivity {
     private TextView tvToggleIngreso, tvToggleEgreso;
     private TextView tvAmountLabel, tvDateDisplay, tvAvailableBalanceM, tvInsufficientBalanceError;
     private EditText etAmount, etNote;
-    private TextView tvCatComida, tvCatTransporte, tvCatEstudio, tvCatOtro;
+    private LinearLayout llCatComida, llCatTransporte, llCatEstudio, llCatOtro;
+    private ImageView ivCatComida, ivCatTransporte, ivCatEstudio, ivCatOtro;
+    private TextView tvCatComidaText, tvCatTransporteText, tvCatEstudioText, tvCatOtroText;
     private RelativeLayout rlDatePicker;
     private LinearLayout llPhotoLocationContainer;
     private Button btnConfirm;
@@ -60,6 +62,7 @@ public class MovimientosActivity extends AppCompatActivity {
     private Bitmap capturedBitmap = null;
     private Double selectedLat = null;
     private Double selectedLng = null;
+    private boolean isLocationEnabled = true;
     private FusedLocationProviderClient fusedLocationClient;
 
     private FirebaseAuth mAuth;
@@ -87,6 +90,8 @@ public class MovimientosActivity extends AppCompatActivity {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                     selectedLat = result.getData().getDoubleExtra("lat", 0);
                     selectedLng = result.getData().getDoubleExtra("lng", 0);
+                    isLocationEnabled = true;
+                    updateLocationUI();
                     Toast.makeText(this, "Ubicación seleccionada manualmente", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -135,10 +140,18 @@ public class MovimientosActivity extends AppCompatActivity {
         tvAvailableBalanceM = findViewById(R.id.tvAvailableBalanceM);
         etAmount = findViewById(R.id.etAmount);
         etNote = findViewById(R.id.etNote);
-        tvCatComida = findViewById(R.id.tvCatComida);
-        tvCatTransporte = findViewById(R.id.tvCatTransporte);
-        tvCatEstudio = findViewById(R.id.tvCatEstudio);
-        tvCatOtro = findViewById(R.id.tvCatOtro);
+        llCatComida = findViewById(R.id.llCatComida);
+        ivCatComida = findViewById(R.id.ivCatComida);
+        tvCatComidaText = findViewById(R.id.tvCatComidaText);
+        llCatTransporte = findViewById(R.id.llCatTransporte);
+        ivCatTransporte = findViewById(R.id.ivCatTransporte);
+        tvCatTransporteText = findViewById(R.id.tvCatTransporteText);
+        llCatEstudio = findViewById(R.id.llCatEstudio);
+        ivCatEstudio = findViewById(R.id.ivCatEstudio);
+        tvCatEstudioText = findViewById(R.id.tvCatEstudioText);
+        llCatOtro = findViewById(R.id.llCatOtro);
+        ivCatOtro = findViewById(R.id.ivCatOtro);
+        tvCatOtroText = findViewById(R.id.tvCatOtroText);
         rlDatePicker = findViewById(R.id.rlDatePicker);
         llPhotoLocationContainer = findViewById(R.id.llPhotoLocationContainer);
         btnConfirm = findViewById(R.id.btnConfirm);
@@ -164,7 +177,7 @@ public class MovimientosActivity extends AppCompatActivity {
         // Initialize UI
         updateToggleUI();
         tvDateDisplay.setText(sdf.format(calendar.getTime()));
-        selectCategory(tvCatComida); // Seleccionada por defecto
+        selectCategory(llCatComida, ivCatComida, tvCatComidaText, getString(R.string.ng_cat_food));
 
         // Toggle Listeners
         tvToggleIngreso.setOnClickListener(v -> {
@@ -181,11 +194,10 @@ public class MovimientosActivity extends AppCompatActivity {
         etAmount.addTextChangedListener(new CurrencyTextWatcher(etAmount, this::validarMontoYBoton));
 
         // Category Listeners
-        View.OnClickListener categoryListener = v -> selectCategory((TextView) v);
-        tvCatComida.setOnClickListener(categoryListener);
-        tvCatTransporte.setOnClickListener(categoryListener);
-        tvCatEstudio.setOnClickListener(categoryListener);
-        tvCatOtro.setOnClickListener(categoryListener);
+        llCatComida.setOnClickListener(v -> selectCategory(llCatComida, ivCatComida, tvCatComidaText, getString(R.string.ng_cat_food)));
+        llCatTransporte.setOnClickListener(v -> selectCategory(llCatTransporte, ivCatTransporte, tvCatTransporteText, getString(R.string.ng_cat_transport)));
+        llCatEstudio.setOnClickListener(v -> selectCategory(llCatEstudio, ivCatEstudio, tvCatEstudioText, getString(R.string.ng_cat_study)));
+        llCatOtro.setOnClickListener(v -> selectCategory(llCatOtro, ivCatOtro, tvCatOtroText, getString(R.string.m_cat_otro)));
 
         // Date Picker
         rlDatePicker.setOnClickListener(v -> showDatePicker());
@@ -200,14 +212,36 @@ public class MovimientosActivity extends AppCompatActivity {
             }
         });
 
-        // Location Picker click (Map)
+        // Location Toggle and Picker click (Map)
+        updateLocationUI();
+
         ivMapIcon.setOnClickListener(v -> {
+            if (isLocationEnabled) {
+                isLocationEnabled = false;
+                selectedLat = null;
+                selectedLng = null;
+                updateLocationUI();
+                Toast.makeText(this, "Ubicación desactivada", Toast.LENGTH_SHORT).show();
+            } else {
+                isLocationEnabled = true;
+                updateLocationUI();
+                requestLocationPermissions();
+                Toast.makeText(this, "Ubicación activada", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        ivMapIcon.setOnLongClickListener(v -> {
+            if (!isLocationEnabled) {
+                isLocationEnabled = true;
+                updateLocationUI();
+            }
             Intent intent = new Intent(this, LocationPickerActivity.class);
             if (selectedLat != null && selectedLng != null) {
                 intent.putExtra("lat", selectedLat);
                 intent.putExtra("lng", selectedLng);
             }
             locationPickerLauncher.launch(intent);
+            return true;
         });
 
         // Confirm Button
@@ -281,7 +315,7 @@ public class MovimientosActivity extends AppCompatActivity {
 
         // Crear objeto
         String id = mDatabase.child("egresos").child(userId).push().getKey();
-        G_Egresos egreso = new G_Egresos(id, montoStr, selectedCategory, fecha, nota, b64Image, System.currentTimeMillis(), selectedLat, selectedLng);
+        G_Egresos egreso = new G_Egresos(id, montoStr, selectedCategory, fecha, nota, b64Image, calendar.getTimeInMillis(), selectedLat, selectedLng);
 
         // Guardar en Firebase
         if (id != null) {
@@ -344,7 +378,7 @@ public class MovimientosActivity extends AppCompatActivity {
 
         // Crear objeto
         String id = mDatabase.child("ingresos").child(userId).push().getKey();
-        G_Ingresos ingreso = new G_Ingresos(id, montoStr, selectedCategory, fecha, nota, b64Image, System.currentTimeMillis(), selectedLat, selectedLng);
+        G_Ingresos ingreso = new G_Ingresos(id, montoStr, selectedCategory, fecha, nota, b64Image, calendar.getTimeInMillis(), selectedLat, selectedLng);
 
         // Guardar en Firebase
         if (id != null) {
@@ -396,7 +430,19 @@ public class MovimientosActivity extends AppCompatActivity {
         }
     }
 
+    private void updateLocationUI() {
+        if (ivMapIcon == null) return;
+        if (isLocationEnabled) {
+            ivMapIcon.setImageTintList(ContextCompat.getColorStateList(this, R.color.nav_active));
+            ivMapIcon.setAlpha(1.0f);
+        } else {
+            ivMapIcon.setImageTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#B0BEC5")));
+            ivMapIcon.setAlpha(0.6f);
+        }
+    }
+
     private void getCurrentLocation() {
+        if (!isLocationEnabled) return;
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
@@ -407,14 +453,16 @@ public class MovimientosActivity extends AppCompatActivity {
                 .build();
 
         fusedLocationClient.getCurrentLocation(request, null).addOnSuccessListener(this, location -> {
-            if (location != null) {
+            if (location != null && isLocationEnabled) {
                 selectedLat = location.getLatitude();
                 selectedLng = location.getLongitude();
-            } else {
+                updateLocationUI();
+            } else if (isLocationEnabled) {
                 fusedLocationClient.getLastLocation().addOnSuccessListener(this, lastLoc -> {
-                    if (lastLoc != null) {
+                    if (lastLoc != null && isLocationEnabled) {
                         selectedLat = lastLoc.getLatitude();
                         selectedLng = lastLoc.getLongitude();
+                        updateLocationUI();
                     }
                 });
             }
@@ -467,22 +515,29 @@ public class MovimientosActivity extends AppCompatActivity {
         validarMontoYBoton();
     }
 
-    private void selectCategory(TextView selected) {
+    private void selectCategory(LinearLayout selectedLayout, ImageView selectedIv, TextView selectedTv, String categoryName) {
         int unselectedTextColor = ContextCompat.getColor(this, R.color.black);
+        int unselectedTint = Color.parseColor("#757575");
+        int activeColor = ContextCompat.getColor(this, R.color.nav_active);
 
-        tvCatComida.setBackgroundResource(R.drawable.category_chip_bg);
-        tvCatComida.setTextColor(unselectedTextColor);
-        tvCatTransporte.setBackgroundResource(R.drawable.category_chip_bg);
-        tvCatTransporte.setTextColor(unselectedTextColor);
-        tvCatEstudio.setBackgroundResource(R.drawable.category_chip_bg);
-        tvCatEstudio.setTextColor(unselectedTextColor);
-        tvCatOtro.setBackgroundResource(R.drawable.category_chip_bg);
-        tvCatOtro.setTextColor(unselectedTextColor);
+        // Reset all chips
+        resetChip(llCatComida, ivCatComida, tvCatComidaText, unselectedTextColor, unselectedTint);
+        resetChip(llCatTransporte, ivCatTransporte, tvCatTransporteText, unselectedTextColor, unselectedTint);
+        resetChip(llCatEstudio, ivCatEstudio, tvCatEstudioText, unselectedTextColor, unselectedTint);
+        resetChip(llCatOtro, ivCatOtro, tvCatOtroText, unselectedTextColor, unselectedTint);
 
-        selected.setBackgroundResource(R.drawable.category_chip_selected_bg);
-        selected.setTextColor(ContextCompat.getColor(this, R.color.nav_active));
+        // Select target chip
+        selectedLayout.setBackgroundResource(R.drawable.category_chip_selected_bg);
+        selectedIv.setImageTintList(ContextCompat.getColorStateList(this, R.color.nav_active));
+        selectedTv.setTextColor(activeColor);
         
-        selectedCategory = selected.getText().toString();
+        selectedCategory = categoryName;
+    }
+
+    private void resetChip(LinearLayout layout, ImageView iv, TextView tv, int textColor, int tintColor) {
+        layout.setBackgroundResource(R.drawable.category_chip_bg);
+        iv.setImageTintList(android.content.res.ColorStateList.valueOf(tintColor));
+        tv.setTextColor(textColor);
     }
 
     private void validarMontoYBoton() {

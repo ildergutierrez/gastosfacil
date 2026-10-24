@@ -151,83 +151,156 @@
                 android:textStyle="bold"
                 android:visibility="gone" />
 
-            <!-- Category Section -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:text="@string/ng_category_label"
-                android:textColor="@color/text_hint"
-                android:textSize="14sp" />
-
-            <HorizontalScrollView
+            <!-- Category Section (2 Rows x 2 Cards, No Scrolling) -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:scrollbars="none">
+                android:orientation="vertical">
 
+                <!-- Row 1 -->
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingVertical="5dp">
+                    android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/tvCatComida"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <LinearLayout
+                        android:id="@+id/llCatComida"
+                        android:layout_width="0dp"
+                        android:layout_height="80dp"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp"
+                        android:orientation="vertical"
+                        android:gravity="center"
                         android:background="@drawable/category_chip_selected_bg"
-                        android:gravity="center"
-                        android:paddingHorizontal="22dp"
-                        android:paddingVertical="10dp"
-                        android:text="@string/ng_cat_food"
-                        android:textColor="@color/nav_active"
                         android:clickable="true"
-                        android:focusable="true" />
+                        android:focusable="true"
+                        android:padding="6dp">
 
-                    <TextView
-                        android:id="@+id/tvCatTransporte"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:background="@drawable/category_chip_bg"
-                        android:gravity="center"
-                        android:paddingHorizontal="22dp"
-                        android:paddingVertical="10dp"
-                        android:text="@string/ng_cat_transport"
-                        android:textColor="@color/black"
-                        android:clickable="true"
-                        android:focusable="true" />
+                        <ImageView
+                            android:id="@+id/ivCatComida"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/ic_home"
+                            app:tint="@color/nav_active"
+                            android:contentDescription="@string/ng_cat_food" />
 
-                    <TextView
-                        android:id="@+id/tvCatEstudio"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:background="@drawable/category_chip_bg"
-                        android:gravity="center"
-                        android:paddingHorizontal="22dp"
-                        android:paddingVertical="10dp"
-                        android:text="@string/ng_cat_study"
-                        android:textColor="@color/black"
-                        android:clickable="true"
-                        android:focusable="true" />
+                        <TextView
+                            android:id="@+id/tvCatComidaText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:text="@string/ng_cat_food"
+                            android:textColor="@color/nav_active"
+                            android:textSize="12sp"
+                            android:gravity="center" />
+                    </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/tvCatOtro"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:background="@drawable/category_chip_bg"
+                    <LinearLayout
+                        android:id="@+id/llCatTransporte"
+                        android:layout_width="0dp"
+                        android:layout_height="80dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="6dp"
+                        android:orientation="vertical"
                         android:gravity="center"
-                        android:paddingHorizontal="22dp"
-                        android:paddingVertical="10dp"
-                        android:text="@string/m_cat_otro"
-                        android:textColor="@color/black"
+                        android:background="@drawable/category_chip_bg"
                         android:clickable="true"
-                        android:focusable="true" />
+                        android:focusable="true"
+                        android:padding="6dp">
+
+                        <ImageView
+                            android:id="@+id/ivCatTransporte"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/ic_truck"
+                            app:tint="#757575"
+                            android:contentDescription="@string/ng_cat_transport" />
+
+                        <TextView
+                            android:id="@+id/tvCatTransporteText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:text="@string/ng_cat_transport"
+                            android:textColor="@color/black"
+                            android:textSize="12sp"
+                            android:gravity="center" />
+                    </LinearLayout>
                 </LinearLayout>
-            </HorizontalScrollView>
+
+                <!-- Row 2 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/llCatEstudio"
+                        android:layout_width="0dp"
+                        android:layout_height="80dp"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="@drawable/category_chip_bg"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="6dp">
+
+                        <ImageView
+                            android:id="@+id/ivCatEstudio"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/ic_history"
+                            app:tint="#757575"
+                            android:contentDescription="@string/ng_cat_study" />
+
+                        <TextView
+                            android:id="@+id/tvCatEstudioText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:text="@string/ng_cat_study"
+                            android:textColor="@color/black"
+                            android:textSize="12sp"
+                            android:gravity="center" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/llCatOtro"
+                        android:layout_width="0dp"
+                        android:layout_height="80dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="6dp"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="@drawable/category_chip_bg"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="6dp">
+
+                        <ImageView
+                            android:id="@+id/ivCatOtro"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/ic_filter"
+                            app:tint="#757575"
+                            android:contentDescription="@string/m_cat_otro" />
+
+                        <TextView
+                            android:id="@+id/tvCatOtroText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:text="@string/m_cat_otro"
+                            android:textColor="@color/black"
+                            android:textSize="12sp"
+                            android:gravity="center" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
 
             <!-- Date Input -->
             <TextView

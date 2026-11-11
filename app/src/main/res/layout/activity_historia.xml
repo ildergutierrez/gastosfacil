@@ -28,7 +28,7 @@
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
         android:paddingHorizontal="16dp"
-        android:paddingBottom="10dp"
+        android:paddingBottom="90dp"
         android:clipToPadding="false"
         app:layout_constraintTop_toBottomOf="@id/tvTitleHistoria"
         app:layout_constraintBottom_toTopOf="@+id/btnVerMas" />
@@ -73,7 +73,8 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_home"
-                app:tint="@color/nav_inactive" />
+                app:tint="@color/nav_inactive"
+                android:importantForAccessibility="no" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -96,7 +97,8 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_minus_circle"
-                app:tint="@color/nav_inactive" />
+                app:tint="@color/nav_inactive"
+                android:importantForAccessibility="no" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -115,7 +117,8 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_history"
-                app:tint="@color/nav_active" />
+                app:tint="@color/nav_active"
+                android:importantForAccessibility="no" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -137,7 +140,8 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_pie_chart" />
+                android:src="@drawable/ic_pie_chart"
+                android:importantForAccessibility="no" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

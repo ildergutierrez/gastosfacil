@@ -18,7 +18,7 @@ import androidx.core.app.ActivityCompat;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
-public class LocationPickerActivity extends AppCompatActivity {
+public class LocationPickerActivity extends BaseActivity {
 
     private static final int REQ_LOCATION = 100;
     private WebView webViewMap;

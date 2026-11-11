@@ -239,4 +239,31 @@
     <string name="pass_req_number">One number</string>
     <string name="pass_req_special">One special character (@$!%*?&amp;)</string>
     <string name="pass_req_match">Passwords match</string>
+
+    <!-- Empty State and Network Errors (Modal) -->
+    <string name="empty_state_title">No Records</string>
+    <string name="empty_state_desc">No saved movements were found in this section.</string>
+    <string name="error_state_title">Connection Error</string>
+    <string name="error_state_desc">Could not retrieve information from the network. Please check your connection.</string>
+    <string name="btn_retry">Retry</string>
+    <string name="btn_ok">OK</string>
+
+    <!-- Form Validations (Points 1 & 2) -->
+    <string name="err_empty_name">Name cannot be empty</string>
+    <string name="err_invalid_email">Enter a valid email address</string>
+    <string name="err_empty_phone">Enter a phone number</string>
+    <string name="err_empty_password">Enter your password</string>
+    <string name="err_password_mismatch">Passwords do not match</string>
+    <string name="err_short_password">Password must be at least 8 characters</string>
+    <string name="err_empty_amount">Enter a valid amount greater than zero</string>
+
+    <!-- Critical Actions (Point 3) -->
+    <string name="dialog_logout_title">Log Out</string>
+    <string name="dialog_logout_message">Are you sure you want to log out of the application?</string>
+    <string name="dialog_delete_title">Delete Record</string>
+    <string name="dialog_delete_message">Are you sure you want to delete this movement?</string>
+    <string name="dialog_confirm">Yes, confirm</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="snackbar_undo">Undo</string>
+    <string name="toast_deleted">Record deleted</string>
 </resources>

@@ -37,7 +37,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 
-public class ConfiguracionActivity extends AppCompatActivity {
+public class ConfiguracionActivity extends BaseActivity {
 
     private EditText etNombre, etCorreo, etTelefono, etFechaNacimiento;
     private Spinner spinnerLenguaje, spinnerGenero, spinnerPais;
@@ -45,11 +45,6 @@ public class ConfiguracionActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private String idiomaActual = "es";
     private String correoActual = "";
-
-    @Override
-    protected void attachBaseContext(android.content.Context newBase) {
-        super.attachBaseContext(LocaleHelper.onAttach(newBase));
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,16 +121,23 @@ public class ConfiguracionActivity extends AppCompatActivity {
             }
         });
 
-        // Cerrar sesión
+        // Cerrar sesión con confirmación M3 AlertDialog
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mAuth.signOut();
-                Intent intent = new Intent(ConfiguracionActivity.this, inicioSesion.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
-                Toast.makeText(ConfiguracionActivity.this, getString(R.string.c_logout_confirm), Toast.LENGTH_SHORT).show();
+                new com.google.android.material.dialog.MaterialAlertDialogBuilder(ConfiguracionActivity.this)
+                        .setTitle(R.string.dialog_logout_title)
+                        .setMessage(R.string.dialog_logout_message)
+                        .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
+                            mAuth.signOut();
+                            Intent intent = new Intent(ConfiguracionActivity.this, inicioSesion.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            finish();
+                            Toast.makeText(ConfiguracionActivity.this, getString(R.string.c_logout_confirm), Toast.LENGTH_SHORT).show();
+                        })
+                        .setNegativeButton(R.string.dialog_cancel, null)
+                        .show();
             }
         });
 
@@ -337,6 +339,8 @@ public class ConfiguracionActivity extends AppCompatActivity {
         dialog.setContentView(R.layout.dialog_cambio_contrasena);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
+        com.google.android.material.textfield.TextInputLayout tilCurrentPass = dialog.findViewById(R.id.tilCurrentPassword);
+        com.google.android.material.textfield.TextInputLayout tilNewPass = dialog.findViewById(R.id.tilNewPassword);
         EditText etCurrentPass = dialog.findViewById(R.id.etCurrentPassword);
         EditText etNewPass = dialog.findViewById(R.id.etNewPassword);
         Button btnSave = dialog.findViewById(R.id.btnSavePassword);
@@ -348,11 +352,22 @@ public class ConfiguracionActivity extends AppCompatActivity {
                 String current = etCurrentPass.getText().toString();
                 String newPass = etNewPass.getText().toString();
 
-                if (current.isEmpty() || newPass.isEmpty()) {
-                    Toast.makeText(ConfiguracionActivity.this, getString(R.string.m_fill_fields), Toast.LENGTH_SHORT).show();
-                } else if (!isValidPassword(newPass)) {
-                    Toast.makeText(ConfiguracionActivity.this, getString(R.string.c_pass_requirement), Toast.LENGTH_LONG).show();
+                boolean valid = true;
+                if (current.isEmpty()) {
+                    tilCurrentPass.setError(getString(R.string.err_empty_password));
+                    valid = false;
                 } else {
+                    tilCurrentPass.setError(null);
+                }
+
+                if (newPass.isEmpty() || !isValidPassword(newPass)) {
+                    tilNewPass.setError(getString(R.string.err_short_password));
+                    valid = false;
+                } else {
+                    tilNewPass.setError(null);
+                }
+
+                if (!valid) return;
                     btnSave.setEnabled(false);
                     btnSave.setText("");
                     pbDialogPass.setVisibility(View.VISIBLE);
@@ -382,7 +397,6 @@ public class ConfiguracionActivity extends AppCompatActivity {
                             }
                         });
                     }
-                }
             }
         });
 
@@ -401,6 +415,7 @@ public class ConfiguracionActivity extends AppCompatActivity {
         dialog.setContentView(R.layout.dialog_reautenticar_correo);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
+        com.google.android.material.textfield.TextInputLayout tilPass = dialog.findViewById(R.id.tilReauthPassword);
         EditText etPass = dialog.findViewById(R.id.etReauthPassword);
         Button btnConfirm = dialog.findViewById(R.id.btnConfirmEmailChange);
         ProgressBar pbDialogReauth = dialog.findViewById(R.id.pbDialogReauth);
@@ -408,8 +423,9 @@ public class ConfiguracionActivity extends AppCompatActivity {
         btnConfirm.setOnClickListener(v -> {
             String password = etPass.getText().toString();
             if (password.isEmpty()) {
-                Toast.makeText(this, getString(R.string.c_enter_pass), Toast.LENGTH_SHORT).show();
+                tilPass.setError(getString(R.string.err_empty_password));
             } else {
+                tilPass.setError(null);
                 btnConfirm.setEnabled(false);
                 btnConfirm.setText("");
                 pbDialogReauth.setVisibility(View.VISIBLE);

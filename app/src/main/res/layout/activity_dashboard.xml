@@ -35,7 +35,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingHorizontal="16dp"
-            android:paddingBottom="20dp">
+            android:paddingBottom="90dp"
+            android:clipToPadding="false">
 
             <!-- Balance Card -->
             <com.google.android.material.card.MaterialCardView
@@ -84,7 +85,7 @@
                                 android:layout_width="16dp"
                                 android:layout_height="16dp"
                                 android:src="@drawable/ic_trend_up"
-                                android:contentDescription="@string/desc_trend_up" />
+                                android:importantForAccessibility="no" />
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -112,7 +113,7 @@
                                 android:layout_width="16dp"
                                 android:layout_height="16dp"
                                 android:src="@drawable/ic_trend_down"
-                                android:contentDescription="@string/desc_trend_down" />
+                                android:importantForAccessibility="no" />
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -267,7 +268,8 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_home" />
+                android:src="@drawable/ic_home"
+                android:importantForAccessibility="no" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -289,7 +291,8 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_minus_circle" />
+                android:src="@drawable/ic_minus_circle"
+                android:importantForAccessibility="no" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -311,7 +314,8 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_history" />
+                android:src="@drawable/ic_history"
+                android:importantForAccessibility="no" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -333,7 +337,8 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_pie_chart" />
+                android:src="@drawable/ic_pie_chart"
+                android:importantForAccessibility="no" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

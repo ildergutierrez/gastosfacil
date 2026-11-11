@@ -47,12 +47,13 @@
 
             <ImageView
                 android:id="@+id/ivLocationIcon"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_marginTop="4dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="12dp"
                 android:src="@drawable/ic_location"
                 app:tint="@color/nav_active"
                 android:visibility="gone"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/logo" />
         </LinearLayout>
 

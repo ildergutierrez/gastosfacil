@@ -17,7 +17,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class RegistroActivity extends AppCompatActivity {
+public class RegistroActivity extends BaseActivity {
 
     private FirebaseAuth mAuth;
 
@@ -38,36 +38,18 @@ public class RegistroActivity extends AppCompatActivity {
         ThemeHelper.applyBackground(this, findViewById(android.R.id.content), false);
         
         //obtener los datos de los inputs
+        com.google.android.material.textfield.TextInputLayout tilFullName = findViewById(R.id.tilFullName);
+        com.google.android.material.textfield.TextInputLayout tilCorreo = findViewById(R.id.tilCorreo);
+        com.google.android.material.textfield.TextInputLayout tilCell = findViewById(R.id.tilCell);
+        com.google.android.material.textfield.TextInputLayout tilPassword = findViewById(R.id.tilPassword);
+        com.google.android.material.textfield.TextInputLayout tilConfirmar = findViewById(R.id.tilConfirmar);
+
         EditText fullName= findViewById(R.id.atfullName);
         EditText correo = findViewById(R.id.atcorreo);
         EditText tel = findViewById(R.id.atcell);
         EditText contra = findViewById(R.id.atpassword);
         EditText confirmar = findViewById(R.id.atconfirmar);
-        ImageButton btnShowPassword = findViewById(R.id.btnShowPassword);
-        ImageButton btnShowConfirmPassword = findViewById(R.id.btnShowConfirmPassword);
         androidx.appcompat.widget.AppCompatButton btnRegistrarse = findViewById(R.id.btnRegistrarse);
-
-        btnShowPassword.setOnClickListener(v -> {
-            if (contra.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
-                contra.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                btnShowPassword.setImageResource(R.drawable.ic_eye_off);
-            } else {
-                contra.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                btnShowPassword.setImageResource(R.drawable.ic_eye);
-            }
-            contra.setSelection(contra.getText().length());
-        });
-
-        btnShowConfirmPassword.setOnClickListener(v -> {
-            if (confirmar.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
-                confirmar.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                btnShowConfirmPassword.setImageResource(R.drawable.ic_eye_off);
-            } else {
-                confirmar.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                btnShowConfirmPassword.setImageResource(R.drawable.ic_eye);
-            }
-            confirmar.setSelection(confirmar.getText().length());
-        });
 
         // Feedback views
         TextView tvReqLength = findViewById(R.id.tvReqLength);
@@ -91,6 +73,12 @@ public class RegistroActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                tilFullName.setError(null);
+                tilCorreo.setError(null);
+                tilCell.setError(null);
+                tilPassword.setError(null);
+                tilConfirmar.setError(null);
+
                 String name = fullName.getText().toString().trim();
                 String email = correo.getText().toString().trim();
                 String phone = tel.getText().toString().trim();
@@ -138,6 +126,45 @@ public class RegistroActivity extends AppCompatActivity {
             String email = correo.getText().toString().trim();
             String phone = tel.getText().toString().trim();
             String password = contra.getText().toString();
+            String confirmPass = confirmar.getText().toString();
+
+            boolean valid = true;
+            if (name.isEmpty()) {
+                tilFullName.setError(getString(R.string.err_empty_name));
+                valid = false;
+            } else {
+                tilFullName.setError(null);
+            }
+
+            if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                tilCorreo.setError(getString(R.string.err_invalid_email));
+                valid = false;
+            } else {
+                tilCorreo.setError(null);
+            }
+
+            if (phone.isEmpty()) {
+                tilCell.setError(getString(R.string.err_empty_phone));
+                valid = false;
+            } else {
+                tilCell.setError(null);
+            }
+
+            if (password.length() < 8) {
+                tilPassword.setError(getString(R.string.err_short_password));
+                valid = false;
+            } else {
+                tilPassword.setError(null);
+            }
+
+            if (!password.equals(confirmPass)) {
+                tilConfirmar.setError(getString(R.string.err_password_mismatch));
+                valid = false;
+            } else {
+                tilConfirmar.setError(null);
+            }
+
+            if (!valid) return;
 
             btnRegistrarse.setEnabled(false);
             btnRegistrarse.setText(""); // Ocultar texto

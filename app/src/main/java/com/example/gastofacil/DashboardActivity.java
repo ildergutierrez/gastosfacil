@@ -1,9 +1,14 @@
 package com.example.gastofacil;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -30,17 +35,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class DashboardActivity extends AppCompatActivity {
+public class DashboardActivity extends BaseActivity {
 
     private TextView tvBalance, tvIncomes, tvExpenses;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
     private NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("es", "CO"));
-
-    @Override
-    protected void attachBaseContext(android.content.Context newBase) {
-        super.attachBaseContext(LocaleHelper.onAttach(newBase));
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +119,11 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     private void cargarResumen() {
+        if (!NetworkUtils.isNetworkAvailable(this)) {
+            showStatusModal(true, v -> cargarResumen());
+            return;
+        }
+
         String userId = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getUid() : null;
         if (userId != null) {
             java.util.Calendar cal = java.util.Calendar.getInstance();
@@ -177,7 +182,7 @@ public class DashboardActivity extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    Toast.makeText(DashboardActivity.this, getString(R.string.h_loading_error), Toast.LENGTH_SHORT).show();
+                    showStatusModal(true, v -> cargarResumen());
                 }
             });
             
@@ -185,6 +190,8 @@ public class DashboardActivity extends AppCompatActivity {
             cargarCategoriaPrincipal(userId, startOfMonth, endOfMonth);
         }
     }
+
+
 
     private void cargarCategoriaPrincipal(String userId, long startOfMonth, long endOfMonth) {
         mDatabase.child("egresos").child(userId).addValueEventListener(new ValueEventListener() {

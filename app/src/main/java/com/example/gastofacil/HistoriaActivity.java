@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class HistoriaActivity extends AppCompatActivity implements TransactionAdapter.OnTransactionClickListener {
+public class HistoriaActivity extends BaseActivity implements TransactionAdapter.OnTransactionClickListener {
 
     private RecyclerView rvHistorial;
     private TransactionAdapter adapter;
@@ -114,6 +114,11 @@ public class HistoriaActivity extends AppCompatActivity implements TransactionAd
     }
 
     private void cargarHistorial() {
+        if (!NetworkUtils.isNetworkAvailable(this)) {
+            showStatusModal(true, v -> cargarHistorial());
+            return;
+        }
+
         String userId = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getUid() : null;
         if (userId == null) return;
 
@@ -143,7 +148,9 @@ public class HistoriaActivity extends AppCompatActivity implements TransactionAd
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
+            public void onCancelled(@NonNull DatabaseError error) {
+                showStatusModal(true, v -> cargarHistorial());
+            }
         });
 
         // Cargar Egresos
@@ -172,9 +179,13 @@ public class HistoriaActivity extends AppCompatActivity implements TransactionAd
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
+            public void onCancelled(@NonNull DatabaseError error) {
+                showStatusModal(true, v -> cargarHistorial());
+            }
         });
     }
+
+
 
     private long parseDateToMillis(String fechaStr) {
         if (fechaStr == null || fechaStr.isEmpty()) return 0L;
@@ -209,6 +220,10 @@ public class HistoriaActivity extends AppCompatActivity implements TransactionAd
         listFull.clear();
         listFull.addAll(mapTransactions.values());
         
+        if (listFull.isEmpty()) {
+            showStatusModal(false, null);
+        }
+
         // Ordenar estrictamente por fecha (los más recientes primero)
         Collections.sort(listFull, (t1, t2) -> {
             long d2 = parseDateToMillis(t2.getFecha());
@@ -271,6 +286,7 @@ public class HistoriaActivity extends AppCompatActivity implements TransactionAd
         ImageView ivFoto = dialog.findViewById(R.id.ivDetalleFoto);
         TextView tvSinEvidencia = dialog.findViewById(R.id.tvSinEvidencia);
         Button btnCerrar = dialog.findViewById(R.id.btnCerrarDetalle);
+        Button btnEliminar = dialog.findViewById(R.id.btnEliminarMovimiento);
 
         tvCategoria.setText(transaction.getCategoria());
         
@@ -328,6 +344,44 @@ public class HistoriaActivity extends AppCompatActivity implements TransactionAd
             ivFoto.setVisibility(View.GONE);
             tvSinEvidencia.setVisibility(View.VISIBLE);
         }
+
+        btnEliminar.setOnClickListener(v -> {
+            new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                    .setTitle(R.string.dialog_delete_title)
+                    .setMessage(R.string.dialog_delete_message)
+                    .setPositiveButton(R.string.dialog_confirm, (d, w) -> {
+                        dialog.dismiss();
+                        String path = transaction.getTipo().equals("INGRESO") ? "ingresos" : "egresos";
+                        String userId = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getUid() : null;
+                        if (userId != null) {
+                            DatabaseReference ref = mDatabase.child(path).child(userId).child(transaction.getId());
+                            ref.get().addOnCompleteListener(task -> {
+                                Object originalValue = task.getResult() != null ? task.getResult().getValue() : null;
+                                ref.removeValue().addOnCompleteListener(delTask -> {
+                                    if (delTask.isSuccessful()) {
+                                        mapTransactions.remove((transaction.getTipo().equals("INGRESO") ? "ingreso_" : "egreso_") + transaction.getId());
+                                        mapTransactions.remove(transaction.getId());
+                                        actualizarUI();
+
+                                        com.google.android.material.snackbar.Snackbar.make(rvHistorial, R.string.toast_deleted, com.google.android.material.snackbar.Snackbar.LENGTH_LONG)
+                                                .setAction(R.string.snackbar_undo, undoView -> {
+                                                    if (originalValue != null) {
+                                                        ref.setValue(originalValue).addOnCompleteListener(restoreTask -> {
+                                                            if (restoreTask.isSuccessful()) {
+                                                                cargarHistorial();
+                                                            }
+                                                        });
+                                                    }
+                                                })
+                                                .show();
+                                    }
+                                });
+                            });
+                        }
+                    })
+                    .setNegativeButton(R.string.dialog_cancel, null)
+                    .show();
+        });
 
         btnCerrar.setOnClickListener(v -> dialog.dismiss());
 

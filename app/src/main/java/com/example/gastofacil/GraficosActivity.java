@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class GraficosActivity extends AppCompatActivity {
+public class GraficosActivity extends BaseActivity {
 
     private TextView tvTotalSpent, tvCurrentMonth, tvMainPercent;
     private ImageView btnNextMonth, btnPrevMonth;

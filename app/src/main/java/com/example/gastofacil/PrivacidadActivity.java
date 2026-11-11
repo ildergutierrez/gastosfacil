@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class PrivacidadActivity extends AppCompatActivity {
+public class PrivacidadActivity extends BaseActivity {
 
     @Override
     protected void attachBaseContext(android.content.Context newBase) {

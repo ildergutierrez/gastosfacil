@@ -232,4 +232,31 @@
     <string name="pass_req_number">Un número</string>
     <string name="pass_req_special">Un carácter especial (@$!%*?&amp;)</string>
     <string name="pass_req_match">Las contraseñas coinciden</string>
+
+    <!-- Estado Vacío y Errores de Red (Modal) -->
+    <string name="empty_state_title">Sin Registros</string>
+    <string name="empty_state_desc">No se encontraron movimientos guardados en esta sección.</string>
+    <string name="error_state_title">Error de Conexión</string>
+    <string name="error_state_desc">No se pudo obtener la información de la red. Por favor, verifica tu conexión.</string>
+    <string name="btn_retry">Reintentar</string>
+    <string name="btn_ok">Aceptar</string>
+
+    <!-- Validaciones de Formularios (Punto 1 y 2) -->
+    <string name="err_empty_name">El nombre no puede estar vacío</string>
+    <string name="err_invalid_email">Ingresa un correo electrónico válido</string>
+    <string name="err_empty_phone">Ingresa un número de teléfono</string>
+    <string name="err_empty_password">Ingresa tu contraseña</string>
+    <string name="err_password_mismatch">Las contraseñas no coinciden</string>
+    <string name="err_short_password">La contraseña debe tener al menos 8 caracteres</string>
+    <string name="err_empty_amount">Ingresa un monto válido mayor a cero</string>
+
+    <!-- Acciones Críticas (Punto 3) -->
+    <string name="dialog_logout_title">Cerrar Sesión</string>
+    <string name="dialog_logout_message">¿Estás seguro de que deseas cerrar sesión en la aplicación?</string>
+    <string name="dialog_delete_title">Eliminar Registro</string>
+    <string name="dialog_delete_message">¿Estás seguro de que deseas eliminar este movimiento?</string>
+    <string name="dialog_confirm">Sí, confirmar</string>
+    <string name="dialog_cancel">Cancelar</string>
+    <string name="snackbar_undo">Deshacer</string>
+    <string name="toast_deleted">Registro eliminado</string>
 </resources>

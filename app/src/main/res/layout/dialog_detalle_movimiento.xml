@@ -163,15 +163,28 @@
     </ScrollView>
 
     <Button
+        android:id="@+id/btnEliminarMovimiento"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="#E91E63"
+        android:text="Eliminar Registro"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:cornerRadius="15dp" />
+
+    <Button
         android:id="@+id/btnCerrarDetalle"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_marginTop="20dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
         android:backgroundTint="@color/nav_active"
         android:text="Cerrar"
         android:textAllCaps="false"
         android:textColor="@color/white"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:textStyle="bold"
         app:cornerRadius="15dp" />
 

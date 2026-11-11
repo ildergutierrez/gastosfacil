@@ -64,7 +64,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingHorizontal="24dp"
-            android:paddingBottom="20dp">
+            android:paddingBottom="90dp"
+            android:clipToPadding="false">
 
             <!-- Banner ARRIBA -->
             <androidx.cardview.widget.CardView

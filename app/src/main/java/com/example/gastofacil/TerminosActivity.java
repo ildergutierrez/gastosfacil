@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class TerminosActivity extends AppCompatActivity {
+public class TerminosActivity extends BaseActivity {
 
     @Override
     protected void attachBaseContext(android.content.Context newBase) {

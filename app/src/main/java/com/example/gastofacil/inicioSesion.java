@@ -22,7 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class inicioSesion extends AppCompatActivity {
+public class inicioSesion extends BaseActivity {
 
     private FirebaseAuth mAuth;
 
@@ -42,12 +42,13 @@ public class inicioSesion extends AppCompatActivity {
         setContentView(R.layout.activity_inicio_sesion);
         ThemeHelper.applyBackground(this, findViewById(android.R.id.content), true);
 
+        com.google.android.material.textfield.TextInputLayout tilUser = findViewById(R.id.tilUser);
+        com.google.android.material.textfield.TextInputLayout tilPassword = findViewById(R.id.tilPassword);
         EditText etUser = findViewById(R.id.etUser);
         EditText etPassword = findViewById(R.id.etPassword);
         Button btnIngresar = findViewById(R.id.btnIngresar);
         TextView tvRegister = findViewById(R.id.tvRegister);
         ImageView ivLogo = findViewById(R.id.ivLogo);
-        ImageButton btnShowPassword = findViewById(R.id.btnShowPassword);
         CheckBox cbRememberMe = findViewById(R.id.cbRememberMe);
 
         android.content.SharedPreferences prefs = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
@@ -69,24 +70,6 @@ public class inicioSesion extends AppCompatActivity {
             triggerBiometricLogin(prefs);
         }
 
-        // Mostrar/Ocultar contraseña
-        btnShowPassword.setOnClickListener(v -> {
-            if (etPassword.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
-                etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                btnShowPassword.setImageResource(R.drawable.ic_eye_off);
-            } else {
-                etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                btnShowPassword.setImageResource(R.drawable.ic_eye);
-            }
-            etPassword.setSelection(etPassword.getText().length());
-        });
-
-        // 1) El botón debe estar deshabilitado inicialmente si no hay datos
-        if (etUser.getText().toString().isEmpty() || etPassword.getText().toString().isEmpty()) {
-            btnIngresar.setEnabled(false);
-            btnIngresar.setAlpha(0.5f);
-        }
-
         // Lógica para habilitar el botón solo cuando ambos campos tengan información
         TextWatcher loginWatcher = new TextWatcher() {
             @Override
@@ -97,6 +80,8 @@ public class inicioSesion extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                tilUser.setError(null);
+                tilPassword.setError(null);
                 String email = etUser.getText().toString().trim();
                 String pass = etPassword.getText().toString().trim();
 
@@ -113,12 +98,28 @@ public class inicioSesion extends AppCompatActivity {
         etUser.addTextChangedListener(loginWatcher);
         etPassword.addTextChangedListener(loginWatcher);
 
-
         // 2) Acción de autenticación
         ProgressBar pbLogin = findViewById(R.id.pbLogin);
         btnIngresar.setOnClickListener(v -> {
             String email = etUser.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
+
+            boolean valid = true;
+            if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                tilUser.setError(getString(R.string.err_invalid_email));
+                valid = false;
+            } else {
+                tilUser.setError(null);
+            }
+
+            if (password.isEmpty()) {
+                tilPassword.setError(getString(R.string.err_empty_password));
+                valid = false;
+            } else {
+                tilPassword.setError(null);
+            }
+
+            if (!valid) return;
 
             btnIngresar.setEnabled(false);
             btnIngresar.setText(""); // Ocultar texto

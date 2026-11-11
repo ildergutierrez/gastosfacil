@@ -45,7 +45,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class MovimientosActivity extends AppCompatActivity {
+public class MovimientosActivity extends BaseActivity {
 
     private TextView tvToggleIngreso, tvToggleEgreso;
     private TextView tvAmountLabel, tvDateDisplay, tvAvailableBalanceM, tvInsufficientBalanceError;

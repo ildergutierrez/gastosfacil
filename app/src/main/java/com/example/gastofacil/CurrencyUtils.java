@@ -26,11 +26,23 @@ public class CurrencyUtils {
         String prefix = value < 0 ? "-" : "";
         
         if (absValue >= 1_000_000_000) {
-            return String.format(new Locale("es", "CO"), "%s$%.1fB", prefix, absValue / 1_000_000_000.0);
+            double valB = absValue / 1_000_000_000.0;
+            if (valB == (long) valB) {
+                return String.format(new Locale("es", "CO"), "%s$%dB", prefix, (long) valB);
+            }
+            return String.format(new Locale("es", "CO"), "%s$%.1fB", prefix, valB);
         } else if (absValue >= 1_000_000) {
-            return String.format(new Locale("es", "CO"), "%s$%.1fM", prefix, absValue / 1_000_000.0);
+            double valM = absValue / 1_000_000.0;
+            if (valM == (long) valM) {
+                return String.format(new Locale("es", "CO"), "%s$%dM", prefix, (long) valM);
+            }
+            return String.format(new Locale("es", "CO"), "%s$%.1fM", prefix, valM);
         } else if (absValue >= 1_000) {
-            return String.format(new Locale("es", "CO"), "%s$%.1fk", prefix, absValue / 1000.0);
+            double valK = absValue / 1_000.0;
+            if (valK == (long) valK) {
+                return String.format(new Locale("es", "CO"), "%s$%dk", prefix, (long) valK);
+            }
+            return String.format(new Locale("es", "CO"), "%s$%.1fk", prefix, valK);
         } else {
             return currencyFormat.format(value);
         }

@@ -286,11 +286,10 @@ public class HistoriaActivity extends BaseActivity implements TransactionAdapter
         ImageView ivFoto = dialog.findViewById(R.id.ivDetalleFoto);
         TextView tvSinEvidencia = dialog.findViewById(R.id.tvSinEvidencia);
         Button btnCerrar = dialog.findViewById(R.id.btnCerrarDetalle);
-        Button btnEliminar = dialog.findViewById(R.id.btnEliminarMovimiento);
 
         tvCategoria.setText(transaction.getCategoria());
         
-        double monto = Double.parseDouble(transaction.getMonto());
+        double monto = Double.parseDouble(transaction.getMonto().replaceAll("[^\\d]", ""));
         String prefix = transaction.getTipo().equals("INGRESO") ? "+ " : "- ";
         tvMonto.setText(prefix + CurrencyUtils.formatFull(monto));
         
@@ -344,44 +343,6 @@ public class HistoriaActivity extends BaseActivity implements TransactionAdapter
             ivFoto.setVisibility(View.GONE);
             tvSinEvidencia.setVisibility(View.VISIBLE);
         }
-
-        btnEliminar.setOnClickListener(v -> {
-            new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
-                    .setTitle(R.string.dialog_delete_title)
-                    .setMessage(R.string.dialog_delete_message)
-                    .setPositiveButton(R.string.dialog_confirm, (d, w) -> {
-                        dialog.dismiss();
-                        String path = transaction.getTipo().equals("INGRESO") ? "ingresos" : "egresos";
-                        String userId = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getUid() : null;
-                        if (userId != null) {
-                            DatabaseReference ref = mDatabase.child(path).child(userId).child(transaction.getId());
-                            ref.get().addOnCompleteListener(task -> {
-                                Object originalValue = task.getResult() != null ? task.getResult().getValue() : null;
-                                ref.removeValue().addOnCompleteListener(delTask -> {
-                                    if (delTask.isSuccessful()) {
-                                        mapTransactions.remove((transaction.getTipo().equals("INGRESO") ? "ingreso_" : "egreso_") + transaction.getId());
-                                        mapTransactions.remove(transaction.getId());
-                                        actualizarUI();
-
-                                        com.google.android.material.snackbar.Snackbar.make(rvHistorial, R.string.toast_deleted, com.google.android.material.snackbar.Snackbar.LENGTH_LONG)
-                                                .setAction(R.string.snackbar_undo, undoView -> {
-                                                    if (originalValue != null) {
-                                                        ref.setValue(originalValue).addOnCompleteListener(restoreTask -> {
-                                                            if (restoreTask.isSuccessful()) {
-                                                                cargarHistorial();
-                                                            }
-                                                        });
-                                                    }
-                                                })
-                                                .show();
-                                    }
-                                });
-                            });
-                        }
-                    })
-                    .setNegativeButton(R.string.dialog_cancel, null)
-                    .show();
-        });
 
         btnCerrar.setOnClickListener(v -> dialog.dismiss());
 

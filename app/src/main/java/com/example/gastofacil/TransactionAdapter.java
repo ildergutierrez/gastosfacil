@@ -104,7 +104,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 txHolder.ivLocation.setVisibility(View.GONE);
             }
 
-            double monto = Double.parseDouble(transaction.getMonto());
+            double monto = Double.parseDouble(transaction.getMonto().replaceAll("[^\\d]", ""));
             String montoFormateado = CurrencyUtils.formatShort(monto);
 
             if ("INGRESO".equals(transaction.getTipo())) {

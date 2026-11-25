@@ -120,30 +120,43 @@ public class GraficosActivity extends BaseActivity {
         String userId = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getUid() : null;
         if (userId == null) return;
 
-        // Obtener el rango del mes actual en timestamps
-        Calendar cal = (Calendar) calendarVisual.clone();
-        cal.set(Calendar.DAY_OF_MONTH, 1);
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-        long startOfMonth = cal.getTimeInMillis();
-
-        cal.add(Calendar.MONTH, 1);
-        long endOfMonth = cal.getTimeInMillis();
-
-        mDatabase.child("egresos").child(userId).addValueEventListener(new ValueEventListener() {
+        mDatabase.child("egresos").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 double total = 0;
                 Map<String, Double> porCategoria = new HashMap<>();
+                long latestTimestamp = 0;
 
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     G_Egresos egr = ds.getValue(G_Egresos.class);
                     if (egr != null) {
-                        // Filtrar por timestamp (más fiable que el string de fecha)
+                        long ts = egr.getTimestamp();
+                        if (ts > latestTimestamp) {
+                            latestTimestamp = ts;
+                        }
+                    }
+                }
+
+                Calendar cal = (Calendar) calendarVisual.clone();
+                cal.set(Calendar.DAY_OF_MONTH, 1);
+                cal.set(Calendar.HOUR_OF_DAY, 0);
+                cal.set(Calendar.MINUTE, 0);
+                cal.set(Calendar.SECOND, 0);
+                cal.set(Calendar.MILLISECOND, 0);
+                long startOfMonth = cal.getTimeInMillis();
+
+                cal.add(Calendar.MONTH, 1);
+                long endOfMonth = cal.getTimeInMillis();
+
+
+
+
+
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    G_Egresos egr = ds.getValue(G_Egresos.class);
+                    if (egr != null) {
                         if (egr.getTimestamp() >= startOfMonth && egr.getTimestamp() < endOfMonth) {
-                            double monto = Double.parseDouble(egr.getMonto());
+                            double monto = Double.parseDouble(egr.getMonto().replaceAll("[^\\d]", ""));
                             total += monto;
                             porCategoria.put(egr.getCategoria(), porCategoria.getOrDefault(egr.getCategoria(), 0.0) + monto);
                         }
